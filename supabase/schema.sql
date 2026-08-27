@@ -18,6 +18,9 @@ create table if not exists public.profiles (
   created_at   timestamptz not null default now()
 );
 
+-- Garante a coluna avatar_url em tabelas já existentes
+alter table public.profiles add column if not exists avatar_url text;
+
 -- ------------------------------------------------------------
 -- VEHICLES
 -- ------------------------------------------------------------
@@ -135,8 +138,9 @@ create trigger on_auth_user_created
 -- ============================================================
 -- STORAGE: bucket para fotos de perfil
 -- ============================================================
-insert into storage.buckets (id, name, public, avif_autodetection)
-values ('avatars', 'avatars', true, false)
+-- Cria o bucket público para os avatares (ignore se já existir)
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
 on conflict (id) do nothing;
 
 drop policy if exists "avatars_select_public" on storage.objects;

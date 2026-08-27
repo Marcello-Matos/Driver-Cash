@@ -20,8 +20,10 @@ export default function Configuracoes() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    await store.uploadAvatar(file)
+    const url = await store.uploadAvatar(file)
     setUploading(false)
+    e.target.value = ''
+    if (!url) return
   }
 
   const confirmReset = () => {
@@ -58,6 +60,9 @@ export default function Configuracoes() {
             )}
           </div>
           <div className="flex-1 min-w-0">
+            {store.error && (
+              <div className="text-sm text-red-500 mb-2">{store.error}</div>
+            )}
             <div className="font-semibold text-lg leading-tight">{store.profile.name}</div>
             <div className="text-sm text-slate-400 truncate">{store.session?.user?.email}</div>
             <div className="text-xs text-slate-500 mt-0.5">{store.profile.role}</div>

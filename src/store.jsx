@@ -144,17 +144,19 @@ export function StoreProvider({ children }) {
   const uploadAvatar = useCallback(async (file) => {
     if (!userId || !file) return null
     setLoading(true)
+    setError('')
     try {
-      const ext = file.name.split('.').pop() || 'png'
+      const ext = (file.name.split('.').pop() || 'png').toLowerCase()
       const path = `${userId}/avatar-${Date.now()}.${ext}`
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(path, file, { upsert: true, contentType: file.type })
+        .upload(path, file, { upsert: true })
       if (uploadError) throw uploadError
       const { data } = supabase.storage.from('avatars').getPublicUrl(path)
       const publicUrl = data.publicUrl
+      const { error: dbError } = await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', userId)
+      if (dbError) throw dbError
       setProfileState((prev) => ({ ...prev, avatar_url: publicUrl }))
-      await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', userId)
       return publicUrl
     } catch (err) {
       console.error(err)
