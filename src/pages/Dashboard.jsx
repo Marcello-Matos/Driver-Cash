@@ -57,9 +57,9 @@ export default function Dashboard({ goTo }) {
   const hoursLabel = `${Math.floor(m.hours)}h ${Math.round((m.hours % 1) * 60)}m`
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* KPI cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         <KpiCard icon={Wallet} iconBg="bg-brand-500" label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
         <KpiCard icon={Receipt} iconBg="bg-rose-500" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
         <KpiCard icon={DollarSign} iconBg="bg-brand-500" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />
