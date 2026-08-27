@@ -110,7 +110,7 @@ export default function Despesas({ fixedCategory }) {
           <button className="btn-primary" onClick={save}>Salvar</button>
         </>}
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="label">Data</label><input type="date" className="input" value={form.date} onChange={set('date')} /></div>
           <div>
             <label className="label">Categoria</label>
@@ -118,12 +118,12 @@ export default function Despesas({ fixedCategory }) {
               {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.key}</option>)}
             </select>
           </div>
-          <div className="col-span-2"><label className="label">Descrição</label><input className="input" value={form.description} onChange={set('description')} placeholder="Ex.: Posto Shell" /></div>
+          <div className="sm:col-span-2"><label className="label">Descrição</label><input className="input" value={form.description} onChange={set('description')} placeholder="Ex.: Posto Shell" /></div>
           <div><label className="label">Valor (R$)</label><input type="number" step="0.01" className="input" value={form.amount} onChange={set('amount')} placeholder="0,00" /></div>
           {form.category === 'Combustível' && (
             <div><label className="label">Litros</label><input type="number" step="0.01" className="input" value={form.liters} onChange={set('liters')} placeholder="0" /></div>
           )}
-          <div className="col-span-2"><label className="label">Observação</label><input className="input" value={form.note} onChange={set('note')} placeholder="Opcional" /></div>
+          <div className="sm:col-span-2"><label className="label">Observação</label><input className="input" value={form.note} onChange={set('note')} placeholder="Opcional" /></div>
         </div>
       </Modal>
     </div>

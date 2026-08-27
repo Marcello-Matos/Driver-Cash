@@ -65,8 +65,8 @@ export default function Veiculos() {
           <button className="btn-primary" onClick={save}>Salvar</button>
         </>}
       >
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-2"><label className="label">Apelido</label><input className="input" value={form.name} onChange={set('name')} placeholder="Ex.: Meu Onix" /></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2"><label className="label">Apelido</label><input className="input" value={form.name} onChange={set('name')} placeholder="Ex.: Meu Onix" /></div>
           <div><label className="label">Marca</label><input className="input" value={form.brand} onChange={set('brand')} placeholder="Chevrolet" /></div>
           <div><label className="label">Modelo</label><input className="input" value={form.model} onChange={set('model')} placeholder="Onix Plus" /></div>
           <div><label className="label">Placa</label><input className="input" value={form.plate} onChange={set('plate')} placeholder="ABC-1D23" /></div>

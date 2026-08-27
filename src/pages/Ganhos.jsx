@@ -108,7 +108,7 @@ export default function Ganhos() {
           <button className="btn-primary" onClick={save}>Salvar</button>
         </>}
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="label">Data</label><input type="date" className="input" value={form.date} onChange={set('date')} /></div>
           <div>
             <label className="label">Plataforma</label>
@@ -120,7 +120,7 @@ export default function Ganhos() {
           <div><label className="label">Nº de corridas</label><input type="number" className="input" value={form.trips} onChange={set('trips')} placeholder="0" /></div>
           <div><label className="label">Km rodados</label><input type="number" className="input" value={form.km} onChange={set('km')} placeholder="0" /></div>
           <div><label className="label">Horas online</label><input type="number" step="0.1" className="input" value={form.hours} onChange={set('hours')} placeholder="0" /></div>
-          <div className="col-span-2"><label className="label">Observação</label><input className="input" value={form.note} onChange={set('note')} placeholder="Opcional" /></div>
+          <div className="sm:col-span-2"><label className="label">Observação</label><input className="input" value={form.note} onChange={set('note')} placeholder="Opcional" /></div>
         </div>
       </Modal>
     </div>

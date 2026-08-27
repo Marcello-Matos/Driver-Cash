@@ -41,9 +41,10 @@ export default function Topbar({ title, onToggleSidebar }) {
         >
           <ChevronLeft size={18} />
         </button>
-        <div className="flex items-center gap-2 px-3 font-semibold text-sm min-w-[140px] justify-center">
-          <Calendar size={16} className="text-brand-500" />
-          {MONTH_NAMES[monthIdx]} / {year}
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 font-semibold text-sm min-w-0 sm:min-w-[140px] justify-center whitespace-nowrap">
+          <Calendar size={16} className="text-brand-500 shrink-0" />
+          <span className="hidden sm:inline">{MONTH_NAMES[monthIdx]} / {year}</span>
+          <span className="sm:hidden">{MONTH_NAMES[monthIdx].slice(0, 3)}/{String(year).slice(2)}</span>
         </div>
         <button
           onClick={() => changeMonth(1)}
@@ -53,7 +54,7 @@ export default function Topbar({ title, onToggleSidebar }) {
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <button
           onClick={toggleTheme}
           title="Alternar tema"

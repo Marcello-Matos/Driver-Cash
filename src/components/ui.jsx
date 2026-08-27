@@ -30,7 +30,7 @@ export function SectionCard({ title, action, children, className = '' }) {
   return (
     <div className={`card p-5 ${className}`}>
       {(title || action) && (
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           {title && <h2 className="font-bold text-base">{title}</h2>}
           {action}
         </div>

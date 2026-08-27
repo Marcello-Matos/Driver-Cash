@@ -136,7 +136,7 @@ function CategoryCard({ categories, total }) {
   const data = categories.length ? categories : [{ key: 'Sem dados', value: 1, color: '#e2e8f0', pct: 0 }]
   return (
     <SectionCard title="Despesas por categoria">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="relative w-[150px] h-[150px] shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
