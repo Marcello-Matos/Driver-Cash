@@ -13,6 +13,7 @@ create table if not exists public.profiles (
   id           uuid primary key references auth.users(id) on delete cascade,
   name         text not null default 'Motorista',
   role         text not null default 'Motorista',
+  avatar_url   text,
   monthly_goal numeric not null default 5000,
   created_at   timestamptz not null default now()
 );
@@ -130,3 +131,26 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ============================================================
+-- STORAGE: bucket para fotos de perfil
+-- ============================================================
+insert into storage.buckets (id, name, public, avif_autodetection)
+values ('avatars', 'avatars', true, false)
+on conflict (id) do nothing;
+
+drop policy if exists "avatars_select_public" on storage.objects;
+create policy "avatars_select_public" on storage.objects
+  for select using (bucket_id = 'avatars');
+
+drop policy if exists "avatars_upload_own" on storage.objects;
+create policy "avatars_upload_own" on storage.objects
+  for insert with check (bucket_id = 'avatars' and auth.uid() = owner);
+
+drop policy if exists "avatars_update_own" on storage.objects;
+create policy "avatars_update_own" on storage.objects
+  for update using (bucket_id = 'avatars' and auth.uid() = owner);
+
+drop policy if exists "avatars_delete_own" on storage.objects;
+create policy "avatars_delete_own" on storage.objects
+  for delete using (bucket_id = 'avatars' and auth.uid() = owner);

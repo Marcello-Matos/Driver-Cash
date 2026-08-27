@@ -56,7 +56,7 @@ export function StoreProvider({ children }) {
   const [error, setError] = useState('')
 
   const [prefs, setPrefs] = useState(loadPrefs)
-  const [profile, setProfileState] = useState({ name: 'Motorista', role: 'Motorista' })
+  const [profile, setProfileState] = useState({ name: 'Motorista', role: 'Motorista', avatar_url: '' })
   const [goals, setGoals] = useState({ monthly: 5000 })
   const [vehicles, setVehicles] = useState([])
   const [earnings, setEarnings] = useState([])
@@ -96,7 +96,7 @@ export function StoreProvider({ children }) {
         supabase.from('expenses').select('*').eq('user_id', userId).order('date', { ascending: false })
       ])
       if (p.data) {
-        setProfileState({ name: p.data.name, role: p.data.role })
+        setProfileState({ name: p.data.name, role: p.data.role, avatar_url: p.data.avatar_url || '' })
         setGoals({ monthly: Number(p.data.monthly_goal) || 0 })
       }
       setVehicles((v.data || []).map(fromDBEntry))
@@ -139,6 +139,30 @@ export function StoreProvider({ children }) {
   const setProfile = useCallback(async (patch) => {
     setProfileState((prev) => ({ ...prev, ...patch }))
     if (userId) await supabase.from('profiles').update(patch).eq('id', userId)
+  }, [userId])
+
+  const uploadAvatar = useCallback(async (file) => {
+    if (!userId || !file) return null
+    setLoading(true)
+    try {
+      const ext = file.name.split('.').pop() || 'png'
+      const path = `${userId}/avatar-${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(path, file, { upsert: true, contentType: file.type })
+      if (uploadError) throw uploadError
+      const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+      const publicUrl = data.publicUrl
+      setProfileState((prev) => ({ ...prev, avatar_url: publicUrl }))
+      await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', userId)
+      return publicUrl
+    } catch (err) {
+      console.error(err)
+      setError(err.message || 'Falha ao enviar a foto.')
+      return null
+    } finally {
+      setLoading(false)
+    }
   }, [userId])
 
   const setGoal = useCallback(async (monthly) => {
@@ -221,13 +245,13 @@ export function StoreProvider({ children }) {
       // prefs
       setSettings, toggleTheme,
       // mutations
-      setProfile, setGoal,
+      setProfile, uploadAvatar, setGoal,
       addEarning, updateEarning, deleteEarning,
       addExpense, updateExpense, deleteExpense,
       addVehicle, updateVehicle, deleteVehicle,
       resetData, clearAll
     }),
-    [session, authReady, loading, error, signIn, signUp, signOut, loadAll, prefs, profile, goals, vehicles, earnings, expenses, setSettings, toggleTheme, setProfile, setGoal, addEarning, updateEarning, deleteEarning, addExpense, updateExpense, deleteExpense, addVehicle, updateVehicle, deleteVehicle, resetData, clearAll]
+    [session, authReady, loading, error, signIn, signUp, signOut, loadAll, prefs, profile, goals, vehicles, earnings, expenses, setSettings, toggleTheme, setProfile, uploadAvatar, setGoal, addEarning, updateEarning, deleteEarning, addExpense, updateExpense, deleteExpense, addVehicle, updateVehicle, deleteVehicle, resetData, clearAll]
   )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

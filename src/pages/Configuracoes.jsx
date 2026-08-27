@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { User, Palette, Database, RefreshCw, Trash2, Sun, Moon, LogOut } from 'lucide-react'
+import { User, Palette, Database, RefreshCw, Trash2, Sun, Moon, LogOut, Camera, Loader2 } from 'lucide-react'
 import { useStore } from '../store'
 import { SectionCard } from '../components/ui'
 
@@ -8,11 +8,20 @@ export default function Configuracoes() {
   const [name, setName] = useState(store.profile.name)
   const [role, setRole] = useState(store.profile.role)
   const [saved, setSaved] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const saveProfile = () => {
     store.setProfile({ name, role })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handleAvatar = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    await store.uploadAvatar(file)
+    setUploading(false)
   }
 
   const confirmReset = () => {
@@ -25,8 +34,34 @@ export default function Configuracoes() {
   return (
     <div className="space-y-6 max-w-3xl">
       <SectionCard title="Perfil">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-slate-400"><User size={16} /> {store.session?.user?.email}</div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+          <div className="relative">
+            {store.profile.avatar_url ? (
+              <img
+                src={store.profile.avatar_url}
+                alt="Foto do perfil"
+                className="w-20 h-20 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-brand-500 flex items-center justify-center text-white text-xl font-semibold">
+                {store.profile.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()}
+              </div>
+            )}
+            <label className="absolute bottom-0 right-0 p-1.5 bg-slate-800 dark:bg-slate-700 rounded-full text-white cursor-pointer shadow hover:bg-slate-700 transition">
+              <Camera size={14} />
+              <input type="file" accept="image/*" className="hidden" onChange={handleAvatar} disabled={uploading} />
+            </label>
+            {uploading && (
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-white">
+                <Loader2 size={20} className="animate-spin" />
+              </div>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-lg leading-tight">{store.profile.name}</div>
+            <div className="text-sm text-slate-400 truncate">{store.session?.user?.email}</div>
+            <div className="text-xs text-slate-500 mt-0.5">{store.profile.role}</div>
+          </div>
           <button className="btn-ghost border border-slate-200 dark:border-slate-600" onClick={store.signOut}><LogOut size={16} /> Sair</button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

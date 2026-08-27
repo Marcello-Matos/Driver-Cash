@@ -75,8 +75,17 @@ export default function Sidebar({ page, setPage, open, onClose }) {
             onClick={() => setPage('configuracoes')}
             className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-slate-800 transition"
           >
-            <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white font-semibold">
-              {initials}
+            <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white font-semibold overflow-hidden shrink-0">
+              {profile.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = 'none' }}
+                />
+              ) : (
+                initials
+              )}
             </div>
             <div className="text-left leading-tight">
               <div className="text-sm font-semibold text-white">{profile.name}</div>
