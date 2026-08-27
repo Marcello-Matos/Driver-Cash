@@ -26,7 +26,7 @@ export default function Topbar({ title, onToggleSidebar }) {
     <header className="sticky top-0 z-20 min-h-[4rem] pt-[max(0.75rem,env(safe-area-inset-top))] bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 px-4 sm:px-6">
       <button
         type="button"
-        className="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 active:scale-95 transition h-10 w-10 flex items-center justify-center shrink-0 mt-1"
+        className="hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 active:scale-95 transition h-10 w-10 flex items-center justify-center shrink-0 mt-1"
         onClick={onToggleSidebar}
         aria-label="Abrir menu"
       >

@@ -1,25 +1,26 @@
 import React, { useEffect } from 'react'
 import { X, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
-export function KpiCard({ icon: Icon, iconBg, label, value, delta, deltaLabel, subtitle }) {
+export function KpiCard({ icon: Icon, iconBg, label, value, delta, deltaLabel, subtitle, color }) {
   const up = delta != null && delta >= 0
+  const isColored = !!color
   return (
-    <div className="card p-4 sm:p-5 flex flex-col gap-2 sm:gap-3">
+    <div className={`p-4 sm:p-5 flex flex-col gap-2 sm:gap-3 rounded-2xl shadow-sm ${isColored ? `text-white ${color}` : 'card'}`}>
       <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white ${iconBg}`}>
+        <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white ${isColored ? 'bg-white/20' : iconBg}`}>
           <Icon size={20} />
         </div>
       </div>
       <div>
-        <div className="text-[11px] sm:text-xs font-medium text-slate-400 uppercase tracking-wide">{label}</div>
+        <div className={`text-[11px] sm:text-xs font-medium uppercase tracking-wide ${isColored ? 'text-white/80' : 'text-slate-400'}`}>{label}</div>
         <div className="text-xl sm:text-2xl font-extrabold mt-1">{value}</div>
         {delta != null ? (
-          <div className={`mt-1 text-xs font-semibold flex items-center gap-1 ${up ? 'text-brand-500' : 'text-rose-500'}`}>
+          <div className={`mt-1 text-xs font-semibold flex items-center gap-1 ${isColored ? 'text-white/90' : (up ? 'text-brand-500' : 'text-rose-500')}`}>
             {up ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
             {Math.abs(delta).toFixed(1)}% {deltaLabel}
           </div>
         ) : (
-          subtitle && <div className="mt-1 text-xs text-slate-400">{subtitle}</div>
+          subtitle && <div className={`mt-1 text-xs ${isColored ? 'text-white/80' : 'text-slate-400'}`}>{subtitle}</div>
         )}
       </div>
     </div>

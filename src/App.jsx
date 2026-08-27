@@ -5,6 +5,7 @@ import Auth from './components/Auth'
 import ConfigNeeded from './components/ConfigNeeded'
 import InstallPrompt from './components/InstallPrompt'
 import Sidebar from './components/Sidebar'
+import BottomNav from './components/BottomNav'
 import Topbar from './components/Topbar'
 import Dashboard from './pages/Dashboard'
 import Ganhos from './pages/Ganhos'
@@ -61,7 +62,7 @@ function AppShell() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 pb-20 lg:pb-0">
         <Topbar
           title={PAGES[page]?.title}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
@@ -70,6 +71,8 @@ function AppShell() {
           <Current goTo={setPage} />
         </main>
       </div>
+
+      <BottomNav page={page} setPage={setPage} onToggleMenu={() => setSidebarOpen((v) => !v)} />
       <InstallPrompt />
     </div>
   )

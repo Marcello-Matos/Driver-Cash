@@ -60,10 +60,10 @@ export default function Dashboard({ goTo }) {
     <div className="space-y-4 sm:space-y-6">
       {/* KPI cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        <KpiCard icon={Wallet} iconBg="bg-brand-500" label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={Receipt} iconBg="bg-rose-500" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={DollarSign} iconBg="bg-brand-500" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={Clock} iconBg="bg-blue-500" label="Lucro por hora" value={brl(m.perHour)} delta={dPerHour} deltaLabel="vs mês anterior" subtitle={`${hoursLabel} trabalhadas`} />
+        <KpiCard icon={Wallet} iconBg="bg-brand-500" color="bg-emerald-500" label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={Receipt} iconBg="bg-rose-500" color="bg-rose-500" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={DollarSign} iconBg="bg-brand-500" color="bg-violet-600" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={Clock} iconBg="bg-blue-500" color="bg-blue-500" label="Lucro por hora" value={brl(m.perHour)} delta={dPerHour} deltaLabel="vs mês anterior" subtitle={`${hoursLabel} trabalhadas`} />
       </div>
 
       {/* Resumo + Evolução */}
