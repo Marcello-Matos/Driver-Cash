@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react'
 import { StoreProvider, useStore } from './store'
 import Auth from './components/Auth'
 import ConfigNeeded from './components/ConfigNeeded'
+import InstallPrompt from './components/InstallPrompt'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import Dashboard from './pages/Dashboard'
@@ -69,6 +70,7 @@ function AppShell() {
           <Current goTo={setPage} />
         </main>
       </div>
+      <InstallPrompt />
     </div>
   )
 }
