@@ -94,3 +94,25 @@ body.no-scroll {
     @apply btn bg-rose-500 hover:bg-rose-600 text-white;
   }
 }
+
+/* No iPhone, focar um campo com fonte menor que 16px faz o Safari dar zoom
+   na pagina sozinho - e ele nao volta ao fechar o teclado. O resultado e a
+   tela "ampliada" e cortada na lateral depois de fazer um lancamento.
+   Manter 16px nos campos no celular impede esse zoom automatico.
+   O seletor com [class] tem prioridade sobre .input sem precisar de
+   !important; a regra vale so no mobile, o desktop segue com text-sm. */
+@media (max-width: 1023px) {
+  input[class],
+  select[class],
+  textarea[class],
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    font-size: inherit;
+  }
+}
