@@ -4,6 +4,7 @@ import {
   Target, FileBarChart, CalendarDays, Settings, Truck, X
 } from 'lucide-react'
 import { useStore } from '../store'
+import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 const NAV = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,6 +22,7 @@ const NAV = [
 export default function Sidebar({ page, setPage, open, onClose }) {
   const { profile } = useStore()
   const initials = profile.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
+  useLockBodyScroll(open)
 
   return (
     <>
@@ -30,7 +32,8 @@ export default function Sidebar({ page, setPage, open, onClose }) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-40 h-full w-64 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-200
+        className={`fixed top-0 left-0 z-40 app-screen w-64 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-200
+          pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]
           ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
       >
         {/* Logo */}

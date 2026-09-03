@@ -4,6 +4,9 @@
 
 :root {
   color-scheme: light dark;
+  /* Altura real da barra inferior: 4rem do conteudo + area segura do aparelho
+     (faixa do gesto no iPhone / barra de navegacao do Android). */
+  --bottom-nav-h: calc(4rem + env(safe-area-inset-bottom, 0px));
 }
 
 html, body, #root {
@@ -15,6 +18,17 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* No celular a rolagem elastica arrasta a pagina inteira e a barra inferior
+   parece "descer" junto. Isso trava esse efeito. */
+html, body {
+  overscroll-behavior-y: none;
+}
+
+/* Trava a rolagem do fundo enquanto um menu ou modal esta aberto. */
+body.no-scroll {
+  overflow: hidden;
 }
 
 /* Scrollbar */
@@ -34,6 +48,30 @@ body {
 }
 
 @layer components {
+  /* Altura da tela realmente visivel. 100vh no celular ignora a barra de
+     endereco do navegador, e sobra um pedaco vazio embaixo do rodape.
+     100dvh acompanha a barra aparecendo e sumindo. */
+  .app-shell {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .app-screen {
+    height: 100vh;
+    height: 100dvh;
+  }
+  /* Espaco no fim do conteudo para nada ficar escondido atras da barra inferior. */
+  .pb-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-h) + 0.5rem);
+  }
+  /* Posiciona um elemento flutuante logo acima da barra inferior. */
+  .above-bottom-nav {
+    bottom: calc(var(--bottom-nav-h) + 0.75rem);
+  }
+  /* Altura maxima do modal seguindo a area realmente visivel no celular. */
+  .modal-panel {
+    max-height: 90vh;
+    max-height: 90dvh;
+  }
   .card {
     @apply bg-white dark:bg-slate-800/70 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-card;
   }

@@ -33,7 +33,7 @@ const PAGES = {
 
 function FullScreenLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400">
+    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400">
       <Loader2 className="animate-spin" size={28} />
     </div>
   )
@@ -51,7 +51,7 @@ function AppShell() {
   const Current = PAGES[page]?.component || Dashboard
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex">
+    <div className="app-shell bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex">
       <Sidebar
         page={page}
         setPage={(p) => {
@@ -62,7 +62,7 @@ function AppShell() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 pb-20 lg:pb-0">
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 pb-bottom-nav lg:pb-0">
         <Topbar
           title={PAGES[page]?.title}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}

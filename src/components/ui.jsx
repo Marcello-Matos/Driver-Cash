@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { X, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 export function KpiCard({ icon: Icon, iconBg, label, value, delta, deltaLabel, subtitle, color }) {
   const up = delta != null && delta >= 0
@@ -42,6 +43,8 @@ export function SectionCard({ title, action, children, className = '' }) {
 }
 
 export function Modal({ open, onClose, title, children, footer }) {
+  useLockBodyScroll(open)
+
   useEffect(() => {
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && onClose()
@@ -53,7 +56,7 @@ export function Modal({ open, onClose, title, children, footer }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg card p-6 max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg card p-6 modal-panel overflow-y-auto overscroll-contain">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-lg">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">

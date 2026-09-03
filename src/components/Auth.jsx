@@ -28,7 +28,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
+    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className="w-11 h-11 rounded-xl bg-brand-500 flex items-center justify-center text-white"><Truck size={24} /></div>

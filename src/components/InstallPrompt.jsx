@@ -37,7 +37,7 @@ export default function InstallPrompt() {
   if (!visible) return null
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm">
+    <div className="fixed above-bottom-nav lg:bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm">
       <div className="card p-4 flex items-center gap-3 shadow-lg">
         <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center shrink-0">
           <Download size={20} />
