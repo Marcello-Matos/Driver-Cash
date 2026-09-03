@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Topbar from './components/Topbar'
 import Dashboard from './pages/Dashboard'
+import ResumoDiario from './pages/ResumoDiario'
 import Ganhos from './pages/Ganhos'
 import Despesas from './pages/Despesas'
 import Combustivel from './pages/Combustivel'
@@ -20,6 +21,7 @@ import Configuracoes from './pages/Configuracoes'
 
 const PAGES = {
   dashboard: { title: 'Dashboard', component: Dashboard },
+  hoje: { title: 'Resumo diário', component: ResumoDiario },
   ganhos: { title: 'Ganhos', component: Ganhos },
   despesas: { title: 'Despesas', component: Despesas },
   combustivel: { title: 'Combustível', component: Combustivel },

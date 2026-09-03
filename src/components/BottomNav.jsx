@@ -1,11 +1,11 @@
 import React from 'react'
-import { LayoutDashboard, TrendingUp, Receipt, CalendarDays, Menu } from 'lucide-react'
+import { LayoutDashboard, Sun, TrendingUp, Receipt, Menu } from 'lucide-react'
 
 const ITEMS = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { key: 'hoje', label: 'Hoje', icon: Sun },
   { key: 'ganhos', label: 'Ganhos', icon: TrendingUp },
   { key: 'despesas', label: 'Despesas', icon: Receipt },
-  { key: 'calendario', label: 'Calendário', icon: CalendarDays },
 ]
 
 export default function BottomNav({ page, setPage, onToggleMenu }) {

@@ -111,3 +111,62 @@ export function delta(current, previous) {
   if (!previous) return null
   return ((current - previous) / previous) * 100
 }
+
+// -------------------------------------------------------------------
+// Métricas diárias (usadas no Resumo Diário)
+// -------------------------------------------------------------------
+export function shiftDateISO(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00')
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+export function computeDay(data, dateStr) {
+  const earns = (data.earnings || []).filter((e) => e.date === dateStr)
+  const exps = (data.expenses || []).filter((e) => e.date === dateStr)
+
+  const gross = sum(earns, (e) => e.gross)
+  const expensesTotal = sum(exps, (e) => e.amount)
+  const net = gross - expensesTotal
+  const trips = sum(earns, (e) => e.trips)
+  const km = sum(earns, (e) => e.km)
+  const hours = sum(earns, (e) => e.hours)
+  const costPerKm = km ? expensesTotal / km : 0
+  const grossPerKm = km ? gross / km : 0
+
+  const recent = [...earns].sort((a, b) => (a.id < b.id ? 1 : -1))
+
+  return { date: dateStr, gross, expensesTotal, net, trips, km, hours, costPerKm, grossPerKm, recent }
+}
+
+export function dailySeries(data, days, endDateStr) {
+  const out = []
+  for (let i = days - 1; i >= 0; i--) {
+    const date = shiftDateISO(endDateStr, -i)
+    const c = computeDay(data, date)
+    out.push({ label: shortDay(date), ganhos: c.gross, despesas: c.expensesTotal })
+  }
+  return out
+}
+
+export function weeklySeries(data, weeks, endDateStr) {
+  const out = []
+  for (let w = weeks - 1; w >= 0; w--) {
+    const weekEnd = shiftDateISO(endDateStr, -w * 7)
+    let ganhos = 0
+    let despesas = 0
+    for (let i = 0; i < 7; i++) {
+      const date = shiftDateISO(weekEnd, -i)
+      const c = computeDay(data, date)
+      ganhos += c.gross
+      despesas += c.expensesTotal
+    }
+    out.push({ label: shortDay(weekEnd), ganhos, despesas })
+  }
+  return out
+}
+
+function shortDay(dateStr) {
+  const [, m, d] = dateStr.split('-')
+  return `${d}/${m}`
+}

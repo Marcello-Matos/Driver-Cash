@@ -1,13 +1,14 @@
 import React from 'react'
 import {
   LayoutDashboard, TrendingUp, Receipt, Fuel, Wrench, Car,
-  Target, FileBarChart, CalendarDays, Settings, Truck, X
+  Target, FileBarChart, CalendarDays, Settings, Truck, X, Sun
 } from 'lucide-react'
 import { useStore } from '../store'
 import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 const NAV = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { key: 'hoje', label: 'Resumo diário', icon: Sun },
   { key: 'ganhos', label: 'Ganhos', icon: TrendingUp },
   { key: 'despesas', label: 'Despesas', icon: Receipt },
   { key: 'combustivel', label: 'Combustível', icon: Fuel },
