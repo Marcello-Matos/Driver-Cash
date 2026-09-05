@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
 import { buildSeed } from './lib/seed'
+import { computeAccess } from './lib/billing'
 
 const PREFS_KEY = 'drivercash:prefs:v1'
 const StoreContext = createContext(null)
@@ -56,7 +57,9 @@ export function StoreProvider({ children }) {
   const [error, setError] = useState('')
 
   const [prefs, setPrefs] = useState(loadPrefs)
-  const [profile, setProfileState] = useState({ name: 'Motorista', role: 'Motorista', avatar_url: '' })
+  const [profile, setProfileState] = useState({ name: 'Motorista', role: 'Motorista', avatar_url: '', created_at: null })
+  const [subscription, setSubscription] = useState(null)
+  const [dataReady, setDataReady] = useState(false)
   const [goals, setGoals] = useState({ monthly: 5000 })
   const [vehicles, setVehicles] = useState([])
   const [earnings, setEarnings] = useState([])
@@ -89,16 +92,18 @@ export function StoreProvider({ children }) {
     setLoading(true)
     setError('')
     try {
-      const [p, v, e, x] = await Promise.all([
+      const [p, v, e, x, s] = await Promise.all([
         supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
         supabase.from('vehicles').select('*').eq('user_id', userId).order('created_at'),
         supabase.from('earnings').select('*').eq('user_id', userId).order('date', { ascending: false }),
-        supabase.from('expenses').select('*').eq('user_id', userId).order('date', { ascending: false })
+        supabase.from('expenses').select('*').eq('user_id', userId).order('date', { ascending: false }),
+        supabase.from('subscriptions').select('*').maybeSingle()
       ])
       if (p.data) {
-        setProfileState({ name: p.data.name, role: p.data.role, avatar_url: p.data.avatar_url || '' })
+        setProfileState({ name: p.data.name, role: p.data.role, avatar_url: p.data.avatar_url || '', created_at: p.data.created_at || null })
         setGoals({ monthly: Number(p.data.monthly_goal) || 0 })
       }
+      setSubscription(s.data || null)
       setVehicles((v.data || []).map(fromDBEntry))
       setEarnings((e.data || []).map(fromDBEntry))
       setExpenses((x.data || []).map(fromDBEntry))
@@ -107,13 +112,19 @@ export function StoreProvider({ children }) {
       setError('Falha ao carregar seus dados.')
     } finally {
       setLoading(false)
+      setDataReady(true)
     }
   }, [userId])
 
   useEffect(() => {
     if (userId) loadAll()
-    else { setVehicles([]); setEarnings([]); setExpenses([]) }
+    else { setVehicles([]); setEarnings([]); setExpenses([]); setSubscription(null); setDataReady(false) }
   }, [userId, loadAll])
+
+  const access = useMemo(
+    () => computeAccess(subscription, profile.created_at || session?.user?.created_at),
+    [subscription, profile.created_at, session]
+  )
 
   // Auth actions ----------------------------------------------------
   const signIn = useCallback(async (email, password) => {
@@ -244,6 +255,8 @@ export function StoreProvider({ children }) {
       signIn, signUp, signOut, reload: loadAll,
       // data
       settings: prefs, profile, goals, vehicles, earnings, expenses,
+      // billing
+      subscription, access, dataReady,
       // prefs
       setSettings, toggleTheme,
       // mutations
@@ -253,7 +266,7 @@ export function StoreProvider({ children }) {
       addVehicle, updateVehicle, deleteVehicle,
       resetData, clearAll
     }),
-    [session, authReady, loading, error, signIn, signUp, signOut, loadAll, prefs, profile, goals, vehicles, earnings, expenses, setSettings, toggleTheme, setProfile, uploadAvatar, setGoal, addEarning, updateEarning, deleteEarning, addExpense, updateExpense, deleteExpense, addVehicle, updateVehicle, deleteVehicle, resetData, clearAll]
+    [session, authReady, loading, error, signIn, signUp, signOut, loadAll, prefs, profile, goals, vehicles, earnings, expenses, subscription, access, dataReady, setSettings, toggleTheme, setProfile, uploadAvatar, setGoal, addEarning, updateEarning, deleteEarning, addExpense, updateExpense, deleteExpense, addVehicle, updateVehicle, deleteVehicle, resetData, clearAll]
   )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

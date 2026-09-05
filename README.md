@@ -59,3 +59,50 @@ Para carregar **dados de exemplo**, entre em **Configurações → Dados → Res
 npm run build
 npm run preview
 ```
+
+## Assinatura via Hotmart (7 dias grátis + R$ 19,90/mês)
+
+Todo usuário novo tem **7 dias grátis** a partir do cadastro. Depois disso o app mostra a
+tela de assinatura. O pagamento (Pix, cartão, boleto) é feito na Hotmart, que avisa o app
+por **webhook** e libera o acesso automaticamente para o **e-mail usado na compra**.
+
+### 1. Supabase
+
+No **SQL Editor**, rode o arquivo `supabase/subscriptions.sql`.
+
+Para liberar acesso permanente para você mesmo (ou para um usuário manualmente), rode:
+
+```sql
+insert into public.subscriptions (email, status, plan, current_period_end)
+values ('seu-email@exemplo.com', 'active', 'Vitalício', '2099-12-31')
+on conflict (email) do update set status = 'active', current_period_end = '2099-12-31';
+```
+
+### 2. Hotmart
+
+1. Produto do tipo **Assinatura**, preço **R$ 19,90/mês**.
+2. Na oferta, ative **Período de teste gratuito** de 7 dias (opcional, o app já dá 7 dias).
+3. Copie o **link de checkout** (ex.: `https://pay.hotmart.com/XXXXXXX`).
+4. Em **Ferramentas → Webhook (Postback)** cadastre a URL:
+   `https://SEU-SITE.netlify.app/.netlify/functions/hotmart-webhook`
+   - Versão: **2.0**
+   - Eventos: marque todos de **Compra** e **Assinatura**.
+5. Copie o **Hottok** (token exibido na tela do webhook).
+
+### 3. Netlify — variáveis de ambiente
+
+Em **Site settings → Environment variables**, adicione:
+
+| Variável | Valor |
+|---|---|
+| `VITE_HOTMART_CHECKOUT_URL` | link de checkout da Hotmart |
+| `HOTMART_HOTTOK` | token do webhook da Hotmart |
+| `SUPABASE_URL` | Project URL do Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** (secreta!) |
+
+Depois clique em **Trigger deploy** para aplicar.
+
+### 4. Testar
+
+Na Hotmart, em **Ferramentas → Webhook**, use **Enviar teste** com o evento
+`PURCHASE_APPROVED`. A linha deve aparecer na tabela `subscriptions` do Supabase.

@@ -4,6 +4,8 @@ import { StoreProvider, useStore } from './store'
 import Auth from './components/Auth'
 import ConfigNeeded from './components/ConfigNeeded'
 import InstallPrompt from './components/InstallPrompt'
+import Paywall from './components/Paywall'
+import TrialBanner from './components/TrialBanner'
 import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Topbar from './components/Topbar'
@@ -42,13 +44,15 @@ function FullScreenLoader() {
 }
 
 function AppShell() {
-  const { isSupabaseConfigured, authReady, session } = useStore()
+  const { isSupabaseConfigured, authReady, session, dataReady, access } = useStore()
   const [page, setPage] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   if (!isSupabaseConfigured) return <ConfigNeeded />
   if (!authReady) return <FullScreenLoader />
   if (!session) return <Auth />
+  if (!dataReady) return <FullScreenLoader />
+  if (access.state === 'expired') return <Paywall />
 
   const Current = PAGES[page]?.component || Dashboard
 
@@ -69,6 +73,7 @@ function AppShell() {
           title={PAGES[page]?.title}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
         />
+        <TrialBanner />
         <main className="flex-1 p-4 sm:p-6 max-w-[1400px] w-full mx-auto">
           <Current goTo={setPage} />
         </main>
