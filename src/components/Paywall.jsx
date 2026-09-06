@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { Truck, Check, Lock, LogOut, RefreshCw, ExternalLink, Star } from 'lucide-react'
+import { Crown, Check, Lock, RefreshCw, ExternalLink, Star, Sparkles } from 'lucide-react'
 import { useStore } from '../store'
-import { PLANS, PLAN_NAME, verifyPayment } from '../lib/billing'
+import { PLANS, PLAN_NAME, FREE_EXPENSES_PER_DAY, verifyPayment } from '../lib/billing'
 import { brl } from '../lib/utils'
 
 const FEATURES = [
-  'Ganhos, despesas e lucro real por dia e por mês',
+  'Despesas ilimitadas (Gratuito: até ' + FREE_EXPENSES_PER_DAY + ' por dia)',
+  'Resumo diário com lucro por hora e gasto por km',
   'Controle de combustível e manutenção',
-  'Metas mensais e resumo diário',
-  'Relatórios, gráficos e calendário',
-  'Acesso pelo celular (app instalável)'
+  'Relatórios completos e calendário',
+  'Histórico ilimitado e exportação CSV'
 ]
 
-export default function Paywall() {
-  const { session, subscription, signOut, reload } = useStore()
+export default function Paywall({ feature }) {
+  const { session, subscription, access, reload } = useStore()
   const email = session?.user?.email || ''
   const status = subscription?.status
 
@@ -26,13 +26,19 @@ export default function Paywall() {
     ? 'Pagamento pendente'
     : status === 'canceled' || status === 'refunded'
       ? 'Assinatura encerrada'
-      : 'Seu período de teste terminou'
+      : feature
+        ? `${feature} é exclusivo do Pro`
+        : access.state === 'trial'
+          ? `Você está no teste grátis (${access.daysLeft} ${access.daysLeft === 1 ? 'dia' : 'dias'} restantes)`
+          : 'Você está no plano Gratuito'
 
   const subtitle = status === 'past_due'
-    ? 'Identificamos um problema na cobrança da sua assinatura. Regularize no Mercado Pago para continuar.'
+    ? 'Identificamos um problema na cobrança da sua assinatura. Regularize no Mercado Pago para manter o Pro.'
     : status === 'canceled' || status === 'refunded'
-      ? 'Sua assinatura foi cancelada. Assine novamente para voltar a usar o DriverCash.'
-      : 'Esperamos que tenha gostado dos 7 dias grátis! Assine para continuar controlando seus ganhos.'
+      ? 'Sua assinatura foi cancelada e você voltou para o plano Gratuito. Assine novamente para liberar tudo.'
+      : feature
+        ? 'Assine o DriverCash PRO para desbloquear este recurso e todos os outros abaixo.'
+        : 'Assine o DriverCash PRO e tenha controle total dos seus ganhos.'
 
   async function handleVerify() {
     setChecking(true)
@@ -50,15 +56,15 @@ export default function Paywall() {
   }
 
   return (
-    <div className="app-shell min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
+    <div className="flex items-start justify-center">
       <div className="w-full max-w-md card p-6 sm:p-8">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-brand-500 flex items-center justify-center text-white"><Truck size={24} /></div>
-          <div className="text-2xl font-extrabold">Driver<span className="text-brand-500">Cash</span></div>
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white"><Crown size={24} /></div>
+          <div className="text-xl font-extrabold">{PLAN_NAME}</div>
         </div>
 
         <div className="flex items-center gap-2 text-amber-500 font-semibold mb-1">
-          <Lock size={18} /> {title}
+          {feature ? <Lock size={18} /> : <Sparkles size={18} />} {title}
         </div>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">{subtitle}</p>
 
@@ -134,9 +140,6 @@ export default function Paywall() {
             </div>
           )}
 
-          <button onClick={signOut} className="btn-ghost w-full justify-center text-sm text-slate-500 mt-2">
-            <LogOut size={15} /> Sair
-          </button>
         </div>
       </div>
     </div>

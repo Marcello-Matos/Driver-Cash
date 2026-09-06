@@ -1,9 +1,10 @@
 import React from 'react'
 import {
   LayoutDashboard, TrendingUp, Receipt, Fuel, Wrench, Car,
-  Target, FileBarChart, CalendarDays, Settings, Truck, X, Sun
+  Target, FileBarChart, CalendarDays, Settings, Truck, X, Sun, Lock, Crown
 } from 'lucide-react'
 import { useStore } from '../store'
+import { isProPage } from '../lib/billing'
 import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 const NAV = [
@@ -17,11 +18,12 @@ const NAV = [
   { key: 'metas', label: 'Metas', icon: Target },
   { key: 'relatorios', label: 'Relatórios', icon: FileBarChart },
   { key: 'calendario', label: 'Calendário', icon: CalendarDays },
-  { key: 'configuracoes', label: 'Configurações', icon: Settings }
+  { key: 'configuracoes', label: 'Configurações', icon: Settings },
+  { key: 'assinatura', label: 'Assinatura', icon: Crown }
 ]
 
 export default function Sidebar({ page, setPage, open, onClose }) {
-  const { profile } = useStore()
+  const { profile, access } = useStore()
   const initials = profile.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
   useLockBodyScroll(open)
 
@@ -68,6 +70,10 @@ export default function Sidebar({ page, setPage, open, onClose }) {
               >
                 <Icon size={18} />
                 {label}
+                {!access.isPro && isProPage(key) && <Lock size={13} className="ml-auto opacity-60" />}
+                {key === 'assinatura' && !access.isPro && (
+                  <span className="ml-auto text-[10px] font-bold uppercase bg-amber-500 text-white px-1.5 py-0.5 rounded-md">Pro</span>
+                )}
               </button>
             )
           })}

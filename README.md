@@ -60,10 +60,17 @@ npm run build
 npm run preview
 ```
 
-## Assinatura via Mercado Pago (7 dias grátis + planos recorrentes)
+## Planos e assinatura via Mercado Pago
 
-Todo usuário novo tem **7 dias grátis** a partir do cadastro. Depois disso o app mostra a
-tela de assinatura com os planos do Mercado Pago (assinatura recorrente, Pix ou cartão).
+| Plano | Acesso |
+|---|---|
+| **Teste grátis** (7 dias após o cadastro) | Tudo do Pro |
+| **Gratuito** (após o teste, sem assinatura) | Dashboard, Ganhos, Despesas (até 3/dia), Veículos, Metas |
+| **Pro** (mensal ou anual) | Tudo: Resumo diário, Combustível, Manutenção, Relatórios, Calendário e despesas ilimitadas |
+
+As páginas exclusivas do Pro e o limite do Gratuito ficam em `src/lib/billing.js`
+(`PRO_PAGES` e `FREE_EXPENSES_PER_DAY`). A tela **Assinatura** mostra os planos do
+Mercado Pago (assinatura recorrente, Pix ou cartão).
 Quando o MP confirma a assinatura, ele avisa o app por **webhook**, que libera o acesso
 para o **e-mail da conta Mercado Pago do pagador**. Se o e-mail do MP for diferente do
 e-mail de login, o usuário usa o botão **"Já paguei, verificar"** e informa o e-mail do MP.

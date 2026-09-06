@@ -20,6 +20,7 @@ import Metas from './pages/Metas'
 import Relatorios from './pages/Relatorios'
 import Calendario from './pages/Calendario'
 import Configuracoes from './pages/Configuracoes'
+import { isProPage } from './lib/billing'
 
 const PAGES = {
   dashboard: { title: 'Dashboard', component: Dashboard },
@@ -32,7 +33,8 @@ const PAGES = {
   metas: { title: 'Metas', component: Metas },
   relatorios: { title: 'Relatórios', component: Relatorios },
   calendario: { title: 'Calendário', component: Calendario },
-  configuracoes: { title: 'Configurações', component: Configuracoes }
+  configuracoes: { title: 'Configurações', component: Configuracoes },
+  assinatura: { title: 'Assinatura', component: Paywall }
 }
 
 function FullScreenLoader() {
@@ -52,8 +54,8 @@ function AppShell() {
   if (!authReady) return <FullScreenLoader />
   if (!session) return <Auth />
   if (!dataReady) return <FullScreenLoader />
-  if (access.state === 'expired') return <Paywall />
 
+  const locked = !access.isPro && isProPage(page)
   const Current = PAGES[page]?.component || Dashboard
 
   return (
@@ -73,9 +75,9 @@ function AppShell() {
           title={PAGES[page]?.title}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
         />
-        <TrialBanner />
+        <TrialBanner goTo={setPage} page={page} />
         <main className="flex-1 p-4 sm:p-6 max-w-[1400px] w-full mx-auto">
-          <Current goTo={setPage} />
+          {locked ? <Paywall feature={PAGES[page]?.title} /> : <Current goTo={setPage} />}
         </main>
       </div>
 
