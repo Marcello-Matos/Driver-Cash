@@ -30,8 +30,12 @@ export const PLANS = [
 
 export const CHECKOUT_URL = PLANS[0]?.url || ''
 
-/** Consulta o Mercado Pago pelo e-mail do usuário e libera o acesso se houver assinatura ativa. */
-export async function verifyPayment(mpEmail) {
+/**
+ * Libera o acesso consultando o Mercado Pago.
+ * - preapprovalId: id devolvido pelo MP no redirecionamento pós-pagamento (vincula direto à conta)
+ * - mpEmail: e-mail alternativo da conta MP (fallback pelo botão "Já paguei")
+ */
+export async function verifyPayment({ mpEmail = '', preapprovalId = '' } = {}) {
   const { data } = await supabase.auth.getSession()
   const token = data.session?.access_token
   if (!token) return { ok: false, message: 'Sessão expirada. Entre novamente.' }
@@ -39,7 +43,7 @@ export async function verifyPayment(mpEmail) {
   const res = await fetch('/.netlify/functions/mp-verify', {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
-    body: JSON.stringify({ mpEmail: mpEmail || '' })
+    body: JSON.stringify({ mpEmail, preapprovalId })
   })
   const body = await res.json().catch(() => ({}))
   if (!res.ok) return { ok: false, message: body.message || body.error || 'Não foi possível verificar agora.' }

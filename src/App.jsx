@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import { StoreProvider, useStore } from './store'
 import Auth from './components/Auth'
@@ -20,7 +20,11 @@ import Metas from './pages/Metas'
 import Relatorios from './pages/Relatorios'
 import Calendario from './pages/Calendario'
 import Configuracoes from './pages/Configuracoes'
-import { isProPage } from './lib/billing'
+import { isProPage, verifyPayment } from './lib/billing'
+import { readEntry, LANDING_URL, markKnownDevice, getPendingPreapproval, setPendingPreapproval } from './lib/entry'
+
+// Lido uma única vez ao abrir o app (antes do primeiro render)
+const ENTRY = readEntry()
 
 const PAGES = {
   dashboard: { title: 'Dashboard', component: Dashboard },
@@ -46,14 +50,46 @@ function FullScreenLoader() {
 }
 
 function AppShell() {
-  const { isSupabaseConfigured, authReady, session, dataReady, access } = useStore()
+  const { isSupabaseConfigured, authReady, session, dataReady, access, reload } = useStore()
   const [page, setPage] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [linking, setLinking] = useState(false)
+
+  // Aparelho com login vira "conhecido": não volta mais para a landing automaticamente
+  useEffect(() => {
+    if (session) markKnownDevice()
+  }, [session])
+
+  // Visitante desconhecido sem login -> landing page
+  const goLanding = isSupabaseConfigured && authReady && !session && ENTRY.redirectToLanding
+  useEffect(() => {
+    if (goLanding) window.location.replace(LANDING_URL)
+  }, [goLanding])
+
+  // Retorno do checkout do Mercado Pago: após o login, vincula a assinatura à conta
+  useEffect(() => {
+    const pending = getPendingPreapproval()
+    if (!session || !dataReady || !pending || access.state === 'active') {
+      if (session && dataReady && pending && access.state === 'active') setPendingPreapproval('')
+      return
+    }
+    let cancelled = false
+    setLinking(true)
+    verifyPayment({ preapprovalId: pending })
+      .then(async (r) => {
+        if (cancelled) return
+        setPendingPreapproval('')
+        if (r.ok) await reload()
+      })
+      .catch(() => { /* sem rede: tenta de novo na próxima abertura */ })
+      .finally(() => { if (!cancelled) setLinking(false) })
+    return () => { cancelled = true }
+  }, [session, dataReady]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!isSupabaseConfigured) return <ConfigNeeded />
-  if (!authReady) return <FullScreenLoader />
-  if (!session) return <Auth />
-  if (!dataReady) return <FullScreenLoader />
+  if (!authReady || goLanding) return <FullScreenLoader />
+  if (!session) return <Auth initialMode={ENTRY.authMode || 'login'} fromPayment={ENTRY.fromPayment} />
+  if (!dataReady || linking) return <FullScreenLoader />
 
   const locked = !access.isPro && isProPage(page)
   const Current = PAGES[page]?.component || Dashboard

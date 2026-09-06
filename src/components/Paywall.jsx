@@ -43,7 +43,7 @@ export default function Paywall({ feature }) {
   async function handleVerify() {
     setChecking(true)
     setMsg(null)
-    const r = await verifyPayment(mpEmail)
+    const r = await verifyPayment({ mpEmail })
     setChecking(false)
     if (r.ok && r.status === 'active') {
       setMsg({ ok: true, text: 'Assinatura encontrada! Liberando acesso...' })

@@ -1,8 +1,8 @@
-import { json, supabaseAdmin, searchPreapprovalsByEmail, rowFromPreapproval, upsertSubscription } from './_mp.js'
+import { json, supabaseAdmin, getPreapproval, searchPreapprovalsByEmail, rowFromPreapproval, upsertSubscription } from './_mp.js'
 
-// Chamado pelo botão "Já paguei, verificar" do app.
-// Procura no Mercado Pago uma assinatura autorizada para o e-mail do usuário
-// (ou para um e-mail alternativo informado, caso a conta do MP use outro e-mail).
+// Chamado pelo app após o login:
+//  - com preapprovalId (retorno do checkout do MP): vincula a assinatura direto à conta
+//  - sem id (botão "Já paguei"): procura pela assinatura pelo e-mail do usuário ou e-mail alternativo
 export default async (req) => {
   if (req.method !== 'POST') return json(405, { error: 'Method not allowed' })
 
@@ -20,12 +20,28 @@ export default async (req) => {
 
     const appEmail = userData.user.email.trim().toLowerCase()
     const altEmail = (body.mpEmail || '').trim().toLowerCase()
+    const preapprovalId = (body.preapprovalId || '').trim()
     const emails = [...new Set([appEmail, altEmail].filter(Boolean))]
 
     let found = null
+    if (preapprovalId) {
+      try {
+        const pre = await getPreapproval(preapprovalId)
+        // Evita que um id de outra pessoa seja vinculado a uma conta já usada por outro e-mail
+        const { data: existing } = await admin.from('subscriptions')
+          .select('email').eq('mp_preapproval_id', pre.id).maybeSingle()
+        if (!existing || existing.email === appEmail || existing.email === (pre.payer_email || '').toLowerCase()) {
+          found = pre
+        }
+      } catch (e) {
+        console.warn('preapproval não encontrado', preapprovalId, e.message)
+      }
+    }
+
     for (const email of emails) {
+      if (found && found.status === 'authorized') break
       const list = await searchPreapprovalsByEmail(email)
-      found = list.find((p) => p.status === 'authorized') || list.find((p) => p.status === 'paused') || list[0] || null
+      found = list.find((p) => p.status === 'authorized') || list.find((p) => p.status === 'paused') || list[0] || found
       if (found && found.status === 'authorized') break
     }
 

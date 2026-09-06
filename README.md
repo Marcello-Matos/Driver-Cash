@@ -94,6 +94,18 @@ values ('seu-email@exemplo.com', 'active', 'Vitalício', '2099-12-31')
 on conflict (email) do update set status = 'active', current_period_end = '2099-12-31';
 ```
 
+### Fluxo de entrada (landing page ↔ app)
+
+- Visitante que abre o app **sem login e sem nunca ter entrado naquele aparelho** é
+  redirecionado para a landing page (`VITE_LANDING_URL`).
+- Links que a landing deve usar para abrir o app (`src/lib/entry.js`):
+  - **Começar grátis** → `https://SEU-APP.netlify.app/?cadastro=1`
+  - **Entrar** → `https://SEU-APP.netlify.app/?login=1`
+  - **Assinar Pro / Anual** → link do plano no Mercado Pago (o MP redireciona de volta).
+- No Mercado Pago, em cada plano configure a **URL de retorno** (back_url) como
+  `https://SEU-APP.netlify.app/?from=mp`. O MP adiciona `preapproval_id` na URL; o app guarda
+  esse id, pede para o cliente criar a conta e vincula a assinatura automaticamente após o login.
+
 ### 2. Mercado Pago
 
 1. Acesse **https://www.mercadopago.com.br/developers** → **Suas integrações** → crie uma
