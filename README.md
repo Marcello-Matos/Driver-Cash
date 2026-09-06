@@ -60,11 +60,20 @@ npm run build
 npm run preview
 ```
 
-## Assinatura via Hotmart (7 dias grátis + R$ 19,90/mês)
+## Assinatura via Mercado Pago (7 dias grátis + planos recorrentes)
 
 Todo usuário novo tem **7 dias grátis** a partir do cadastro. Depois disso o app mostra a
-tela de assinatura. O pagamento (Pix, cartão, boleto) é feito na Hotmart, que avisa o app
-por **webhook** e libera o acesso automaticamente para o **e-mail usado na compra**.
+tela de assinatura com os planos do Mercado Pago (assinatura recorrente, Pix ou cartão).
+Quando o MP confirma a assinatura, ele avisa o app por **webhook**, que libera o acesso
+para o **e-mail da conta Mercado Pago do pagador**. Se o e-mail do MP for diferente do
+e-mail de login, o usuário usa o botão **"Já paguei, verificar"** e informa o e-mail do MP.
+
+Arquivos envolvidos:
+
+- `netlify/functions/mp-webhook.js` — recebe as notificações do Mercado Pago
+- `netlify/functions/mp-verify.js` — botão "Já paguei" (consulta o MP pelo e-mail)
+- `src/lib/billing.js` — planos, trial e cálculo de acesso
+- `src/components/Paywall.jsx` — tela de assinatura
 
 ### 1. Supabase
 
@@ -78,16 +87,18 @@ values ('seu-email@exemplo.com', 'active', 'Vitalício', '2099-12-31')
 on conflict (email) do update set status = 'active', current_period_end = '2099-12-31';
 ```
 
-### 2. Hotmart
+### 2. Mercado Pago
 
-1. Produto do tipo **Assinatura**, preço **R$ 19,90/mês**.
-2. Na oferta, ative **Período de teste gratuito** de 7 dias (opcional, o app já dá 7 dias).
-3. Copie o **link de checkout** (ex.: `https://pay.hotmart.com/XXXXXXX`).
-4. Em **Ferramentas → Webhook (Postback)** cadastre a URL:
-   `https://SEU-SITE.netlify.app/.netlify/functions/hotmart-webhook`
-   - Versão: **2.0**
-   - Eventos: marque todos de **Compra** e **Assinatura**.
-5. Copie o **Hottok** (token exibido na tela do webhook).
+1. Acesse **https://www.mercadopago.com.br/developers** → **Suas integrações** → crie uma
+   aplicação (ou use a existente) do tipo **Pagamentos online / Assinaturas**.
+2. Em **Credenciais de produção**, copie o **Access Token** (`APP_USR-...`).
+3. Em **Webhooks** → **Configurar notificações** (modo produção):
+   - URL: `https://SEU-SITE.netlify.app/.netlify/functions/mp-webhook`
+   - Eventos: marque **Planos e assinaturas** (`subscription_preapproval`) e
+     **Pagamentos de assinaturas** (`subscription_authorized_payment`).
+   - Salve e copie a **Assinatura secreta** exibida.
+4. Os links dos planos (`.../subscriptions/checkout?preapproval_plan_id=...`) você já tem
+   em **Assinaturas → Planos** no painel do Mercado Pago.
 
 ### 3. Netlify — variáveis de ambiente
 
@@ -95,14 +106,21 @@ Em **Site settings → Environment variables**, adicione:
 
 | Variável | Valor |
 |---|---|
-| `VITE_HOTMART_CHECKOUT_URL` | link de checkout da Hotmart |
-| `HOTMART_HOTTOK` | token do webhook da Hotmart |
+| `VITE_MP_CHECKOUT_MENSAL` | link do plano mensal |
+| `VITE_MP_PRICE_MENSAL` | `19.90` |
+| `VITE_MP_CHECKOUT_ANUAL` | link do plano anual (opcional) |
+| `VITE_MP_PRICE_ANUAL` | preço anual, ex.: `199.00` (opcional) |
+| `VITE_MP_ANUAL_DESTAQUE` | selo do plano anual, ex.: `2 meses grátis` (opcional) |
+| `MP_ACCESS_TOKEN` | Access Token de produção do Mercado Pago (**secreta**) |
+| `MP_WEBHOOK_SECRET` | Assinatura secreta do webhook (**secreta**) |
 | `SUPABASE_URL` | Project URL do Supabase |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** (secreta!) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** (**secreta**) |
 
 Depois clique em **Trigger deploy** para aplicar.
 
 ### 4. Testar
 
-Na Hotmart, em **Ferramentas → Webhook**, use **Enviar teste** com o evento
-`PURCHASE_APPROVED`. A linha deve aparecer na tabela `subscriptions` do Supabase.
+1. Faça uma assinatura de teste pelo link do plano.
+2. No Supabase, a tabela `subscriptions` deve receber a linha com `status = active`.
+3. Entre no app com o mesmo e-mail — o acesso deve estar liberado.
+4. Se não liberar, clique em **"Já paguei, verificar"** na tela de assinatura.
