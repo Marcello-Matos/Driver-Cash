@@ -74,6 +74,14 @@ export default function Paywall({ feature, goTo }) {
     }
   }
 
+  // Envia o e-mail do usuário no checkout: o Mercado Pago guarda como external_reference
+  // e o webhook libera a conta certa automaticamente, mesmo se pagar com outra conta MP.
+  const checkoutUrl = (p) => {
+    if (!email) return p.url
+    const sep = p.url.includes('?') ? '&' : '?'
+    return `${p.url}${sep}payer_email=${encodeURIComponent(email)}&external_reference=${encodeURIComponent(email)}`
+  }
+
   return (
     <div className="flex items-start justify-center">
       <div className="w-full max-w-md card p-6 sm:p-8">
@@ -104,7 +112,7 @@ export default function Paywall({ feature, goTo }) {
             {PLANS.map((p) => (
               <a
                 key={p.key}
-                href={p.url}
+                href={checkoutUrl(p)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`relative rounded-2xl border-2 p-4 flex flex-col items-center text-center transition hover:-translate-y-0.5
