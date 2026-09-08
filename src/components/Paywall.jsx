@@ -128,25 +128,29 @@ export default function Paywall({ feature, goTo }) {
                 </span>
               </a>
             ))}
+            <div className="col-span-full rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-4 flex flex-col items-center text-center">
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Plano</div>
+              <div className="text-sm font-semibold mt-1">Gratuito</div>
+              <div className="flex items-end gap-1 mt-2">
+                <span className="text-2xl font-extrabold">{brl(0)}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 mb-1">para sempre</span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Dashboard, ganhos, até {FREE_EXPENSES_PER_DAY} despesas por dia, veículos e metas.
+              </p>
+              <button
+                onClick={() => goTo?.('dashboard')}
+                className="btn-primary w-full justify-center mt-3 text-xs py-2"
+              >
+                <LayoutDashboard size={13} /> Continuar
+              </button>
+            </div>
           </div>
         )}
 
         <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-4">
           Pague com Pix ou cartão pelo Mercado Pago. Use o e-mail <b className="text-slate-700 dark:text-slate-200">{email}</b> para liberar automaticamente.
         </p>
-
-        <div className="mt-3 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 text-center">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Gratuito</div>
-          <div className="text-2xl font-extrabold mt-1">R$ 0,00 <span className="text-xs font-normal text-slate-500 dark:text-slate-400">para sempre</span></div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Dashboard, ganhos, até {FREE_EXPENSES_PER_DAY} despesas por dia, veículos e metas.
-          </p>
-          {goTo && (
-            <button onClick={() => goTo('dashboard')} className="btn-ghost w-full justify-center mt-3 text-xs py-2">
-              <LayoutDashboard size={13} /> Continuar no plano Gratuito
-            </button>
-          )}
-        </div>
 
         <div className="mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
           {!showVerify ? (
