@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Crown, Check, Lock, RefreshCw, ExternalLink, Star, Sparkles } from 'lucide-react'
 import { useStore } from '../store'
-import { PLANS, PLAN_NAME, FREE_EXPENSES_PER_DAY, verifyPayment } from '../lib/billing'
+import { PLANS, PLAN_NAME, FREE_EXPENSES_PER_DAY, verifyPayment, isOwnerEmail } from '../lib/billing'
 import { brl } from '../lib/utils'
 
 const FEATURES = [
@@ -31,6 +31,25 @@ export default function Paywall({ feature }) {
         : access.state === 'trial'
           ? `Você está no teste grátis (${access.daysLeft} ${access.daysLeft === 1 ? 'dia' : 'dias'} restantes)`
           : 'Você está no plano Gratuito'
+
+  if (isOwnerEmail(email)) {
+    return (
+      <div className="flex items-start justify-center">
+        <div className="w-full max-w-md card p-6 sm:p-8 text-center">
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white"><Crown size={24} /></div>
+            <div className="text-xl font-extrabold">{PLAN_NAME}</div>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-brand-500 font-semibold mb-1">
+            <Check size={18} /> Acesso Pro liberado
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Conta do desenvolvedor ({email}) com todos os recursos do Pro desbloqueados permanentemente.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const subtitle = status === 'past_due'
     ? 'Identificamos um problema na cobrança da sua assinatura. Regularize no Mercado Pago para manter o Pro.'

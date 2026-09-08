@@ -122,7 +122,7 @@ export function StoreProvider({ children }) {
   }, [userId, loadAll])
 
   const access = useMemo(
-    () => computeAccess(subscription, profile.created_at || session?.user?.created_at),
+    () => computeAccess(subscription, profile.created_at || session?.user?.created_at, session?.user?.email),
     [subscription, profile.created_at, session]
   )
 
