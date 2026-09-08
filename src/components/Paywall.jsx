@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Crown, Check, Lock, RefreshCw, ExternalLink, Star, Sparkles } from 'lucide-react'
+import { Crown, Check, Lock, RefreshCw, ExternalLink, Star, Sparkles, LayoutDashboard } from 'lucide-react'
 import { useStore } from '../store'
 import { PLANS, PLAN_NAME, FREE_EXPENSES_PER_DAY, verifyPayment, isOwnerEmail } from '../lib/billing'
 import { brl } from '../lib/utils'
@@ -12,7 +12,7 @@ const FEATURES = [
   'Histórico ilimitado e exportação CSV'
 ]
 
-export default function Paywall({ feature }) {
+export default function Paywall({ feature, goTo }) {
   const { session, subscription, access, reload } = useStore()
   const email = session?.user?.email || ''
   const status = subscription?.status
@@ -134,6 +134,19 @@ export default function Paywall({ feature }) {
         <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-4">
           Pague com Pix ou cartão pelo Mercado Pago. Use o e-mail <b className="text-slate-700 dark:text-slate-200">{email}</b> para liberar automaticamente.
         </p>
+
+        <div className="mt-3 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 text-center">
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Gratuito</div>
+          <div className="text-2xl font-extrabold mt-1">R$ 0,00 <span className="text-xs font-normal text-slate-500 dark:text-slate-400">para sempre</span></div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Dashboard, ganhos, até {FREE_EXPENSES_PER_DAY} despesas por dia, veículos e metas.
+          </p>
+          {goTo && (
+            <button onClick={() => goTo('dashboard')} className="btn-ghost w-full justify-center mt-3 text-xs py-2">
+              <LayoutDashboard size={13} /> Continuar no plano Gratuito
+            </button>
+          )}
+        </div>
 
         <div className="mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
           {!showVerify ? (

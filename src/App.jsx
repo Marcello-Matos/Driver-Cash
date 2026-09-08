@@ -113,7 +113,7 @@ function AppShell() {
         />
         <TrialBanner goTo={setPage} page={page} />
         <main className="flex-1 p-4 sm:p-6 max-w-[1400px] w-full mx-auto">
-          {locked ? <Paywall feature={PAGES[page]?.title} /> : <Current goTo={setPage} />}
+          {locked ? <Paywall feature={PAGES[page]?.title} goTo={setPage} /> : <Current goTo={setPage} />}
         </main>
       </div>
 
