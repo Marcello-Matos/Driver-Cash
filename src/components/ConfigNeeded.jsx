@@ -1,13 +1,14 @@
 import React from 'react'
-import { Database, Truck } from 'lucide-react'
+import { Database } from 'lucide-react'
+import { TruckLogoIcon } from './icons'
 
 export default function ConfigNeeded() {
   return (
     <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
       <div className="w-full max-w-xl card p-8">
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-brand-500 flex items-center justify-center text-white"><Truck size={24} /></div>
-          <div className="text-2xl font-extrabold">Driver<span className="text-brand-500">Cash</span></div>
+          <div className="w-11 h-11 rounded-xl bg-slate-900 ring-1 ring-emerald-400/50 flex items-center justify-center shadow-[0_0_14px_rgba(141,255,92,0.4)]"><TruckLogoIcon size={25} /></div>
+          <div className="text-2xl font-extrabold">Driver<span className="bg-gradient-to-r from-lime-500 to-teal-400 bg-clip-text text-transparent">Cash</span></div>
         </div>
 
         <div className="flex items-center gap-2 text-amber-500 font-semibold mb-2">

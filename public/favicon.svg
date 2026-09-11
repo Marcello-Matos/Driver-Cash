@@ -1,6 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#16a34a"/>
-  <path d="M7 20l1.8-5.2A2 2 0 0 1 10.7 13h10.6a2 2 0 0 1 1.9 1.8L25 20v3a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H10.5v1a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-3z" fill="#fff"/>
-  <circle cx="11" cy="19.5" r="1.3" fill="#16a34a"/>
-  <circle cx="21" cy="19.5" r="1.3" fill="#16a34a"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0c2b33"/>
+      <stop offset="1" stop-color="#061116"/>
+    </linearGradient>
+    <linearGradient id="truck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d8ff4b"/>
+      <stop offset="1" stop-color="#19d6aa"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <g transform="translate(6.5,5.4) scale(0.83)">
+    <rect x="2" y="6.2" width="12.6" height="9.3" rx="1.6" fill="url(#truck)"/>
+    <path d="M14.6 9.4h3.2c.4 0 .8.2 1.1.5l2.3 2.6c.2.3.3.6.3 1v2h-6.9Z" fill="#0b242c" stroke="#8dff5c" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M16.2 10.8h1.5l1.8 2.1h-3.3Z" fill="#79cfff"/>
+    <circle cx="6.3" cy="17.5" r="2" fill="#0b242c" stroke="#8dff5c" stroke-width="1.5"/>
+    <circle cx="15.7" cy="17.5" r="2" fill="#0b242c" stroke="#8dff5c" stroke-width="1.5"/>
+    <circle cx="6.3" cy="17.5" r="0.6" fill="#8dff5c"/>
+    <circle cx="15.7" cy="17.5" r="0.6" fill="#8dff5c"/>
+  </g>
 </svg>

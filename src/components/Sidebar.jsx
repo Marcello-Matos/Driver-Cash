@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import {
   Fuel, Wrench, Car,
-  Target, FileBarChart, CalendarDays, Settings, Truck, X, Lock, Crown, LogOut
+  Target, FileBarChart, CalendarDays, Settings, X, Lock, Crown, LogOut
 } from 'lucide-react'
-import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon } from './icons'
+import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon, TruckLogoIcon } from './icons'
 import { useStore } from '../store'
 import { isProPage } from '../lib/billing'
 import { useLockBodyScroll } from '../lib/useLockBodyScroll'
@@ -43,12 +43,12 @@ export default function Sidebar({ page, setPage, open, onClose }) {
       >
         {/* Logo */}
         <div className="flex items-center gap-2 px-5 h-16 border-b border-slate-800">
-          <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white">
-            <Truck size={20} />
+          <div className="w-9 h-9 rounded-xl bg-slate-900 ring-1 ring-emerald-400/50 flex items-center justify-center shadow-[0_0_12px_rgba(141,255,92,0.35)]">
+            <TruckLogoIcon size={21} />
           </div>
           <div className="leading-tight">
             <div className="font-extrabold text-white text-lg">
-              Driver<span className="text-brand-400">Cash</span>
+              Driver<span className="bg-gradient-to-r from-lime-300 to-teal-300 bg-clip-text text-transparent">Cash</span>
             </div>
             <div className="text-[10px] text-slate-400 -mt-0.5">Controle financeiro para motoristas</div>
           </div>

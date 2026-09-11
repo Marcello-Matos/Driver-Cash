@@ -114,3 +114,33 @@ export function MenuBarsIcon({ size = 24, className = '' }) {
     </svg>
   )
 }
+
+export function TruckLogoIcon({ size = 24, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">
+      <defs>
+        <linearGradient id="dcg-truck" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#d8ff4b" />
+          <stop offset="1" stopColor="#19d6aa" />
+        </linearGradient>
+      </defs>
+      {/* bau com gradiente */}
+      <rect x="2" y="6.2" width="12.6" height="9.3" rx="1.6" fill="url(#dcg-truck)" />
+      {/* cabine neon */}
+      <path
+        d="M14.6 9.4h3.2c.4 0 .8.2 1.1.5l2.3 2.6c.2.3.3.6.3 1v2h-6.9Z"
+        fill="#0b242c"
+        stroke="#8dff5c"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* janela */}
+      <path d="M16.2 10.8h1.5l1.8 2.1h-3.3Z" fill="#79cfff" />
+      {/* rodas neon */}
+      <circle cx="6.3" cy="17.5" r="2" fill="#0b242c" stroke="#8dff5c" strokeWidth="1.5" />
+      <circle cx="15.7" cy="17.5" r="2" fill="#0b242c" stroke="#8dff5c" strokeWidth="1.5" />
+      <circle cx="6.3" cy="17.5" r="0.6" fill="#8dff5c" />
+      <circle cx="15.7" cy="17.5" r="0.6" fill="#8dff5c" />
+    </svg>
+  )
+}
