@@ -4,10 +4,9 @@
 
 :root {
   color-scheme: light dark;
-  /* Altura real da barra inferior flutuante (pill): ~4.5rem de conteudo +
-     deslocamento de 0.75rem da borda + area segura do aparelho
+  /* Altura real da barra inferior: 4rem do conteudo + area segura do aparelho
      (faixa do gesto no iPhone / barra de navegacao do Android). */
-  --bottom-nav-h: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  --bottom-nav-h: calc(4rem + env(safe-area-inset-bottom, 0px));
 }
 
 html, body, #root {
