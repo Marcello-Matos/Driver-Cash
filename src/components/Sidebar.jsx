@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import {
-  LayoutDashboard, TrendingUp, Receipt, Fuel, Wrench, Car,
-  Target, FileBarChart, CalendarDays, Settings, Truck, X, Sun, Lock, Crown, LogOut
+  Fuel, Wrench, Car,
+  Target, FileBarChart, CalendarDays, Settings, Truck, X, Lock, Crown, LogOut
 } from 'lucide-react'
+import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon } from './icons'
 import { useStore } from '../store'
 import { isProPage } from '../lib/billing'
 import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 const NAV = [
-  { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { key: 'hoje', label: 'Resumo diário', icon: Sun },
-  { key: 'ganhos', label: 'Ganhos', icon: TrendingUp },
-  { key: 'despesas', label: 'Despesas', icon: Receipt },
+  { key: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
+  { key: 'hoje', label: 'Resumo diário', icon: SunIcon },
+  { key: 'ganhos', label: 'Ganhos', icon: ChartIcon },
+  { key: 'despesas', label: 'Despesas', icon: ReceiptIcon },
   { key: 'combustivel', label: 'Combustível', icon: Fuel },
   { key: 'manutencao', label: 'Manutenção', icon: Wrench },
   { key: 'veiculos', label: 'Veículos', icon: Car },
@@ -64,12 +65,12 @@ export default function Sidebar({ page, setPage, open, onClose }) {
               <button
                 key={key}
                 onClick={() => setPage(key)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
+                className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
                   ${active
                     ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
-                <Icon size={18} />
+                <Icon size={18} className="shrink-0 transition-transform duration-200 ease-out group-hover:scale-125" />
                 {label}
                 {!access.isPro && isProPage(key) && <Lock size={13} className="ml-auto opacity-60" />}
                 {key === 'assinatura' && !access.isPro && (

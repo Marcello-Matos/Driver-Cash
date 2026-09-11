@@ -1,102 +1,116 @@
 import React from 'react'
 
 /*
-  Icones customizados no estilo do modelo enviado pelo cliente:
-  traço azul arredondado (currentColor) + detalhes com gradiente amarelo→laranja.
-  Vetoriais (SVG), nítidos em qualquer tela/densidade.
-  API compativel com lucide-react (props size e className) para troca facil.
+  Icones customizados baseados nas artes vetorizadas enviadas pelo cliente (pasta /img).
+  Tema neon escuro: tracos azul-claro (currentColor) + gradientes lima->turquesa e azul.
+  Vetoriais (SVG inline), nitidos em qualquer tela/densidade.
+  API compativel com lucide-react (props size e className).
 */
 
-function GradientDefs({ id }) {
-  return (
-    <defs>
-      <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#fde047" />
-        <stop offset="55%" stopColor="#fbbf24" />
-        <stop offset="100%" stopColor="#f59e0b" />
-      </linearGradient>
-    </defs>
-  )
+const GRAD = {
+  dash: 'dcg-dash',
+  bars: 'dcg-bars',
+  paper: 'dcg-paper',
+  menu: 'dcg-menu',
 }
 
-const base = {
-  fill: 'none',
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-}
-
-export function HomeIcon({ size = 24, className = '' }) {
+export function DashboardIcon({ size = 24, className = '' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
-      <GradientDefs id="g-home" />
-      {/* corpo da casa */}
-      <path
-        d="M4 10.6 12 4l8 6.6V19.4a1.4 1.4 0 0 1-1.4 1.4H5.4A1.4 1.4 0 0 1 4 19.4Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      {/* porta com gradiente */}
-      <path
-        d="M10 20.8v-5.4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5.4Z"
-        fill="url(#g-home)"
-      />
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">
+      <defs>
+        <linearGradient id={GRAD.dash} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#d8ff4b" />
+          <stop offset="1" stopColor="#19d6aa" />
+        </linearGradient>
+      </defs>
+      {/* ladrilho externo */}
+      <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="4.6" stroke="currentColor" strokeWidth="1.6" />
+      {/* grade 2x2, um quadro preenchido com gradiente */}
+      <rect x="6.6" y="6.6" width="4.5" height="4.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
+      <rect x="12.9" y="6.6" width="4.5" height="4.5" rx="1.2" fill={`url(#${GRAD.dash})`} />
+      <rect x="6.6" y="12.9" width="4.5" height="4.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
+      <rect x="12.9" y="12.9" width="4.5" height="4.5" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
     </svg>
   )
 }
 
-export function ClockIcon({ size = 24, className = '' }) {
+export function SunIcon({ size = 24, className = '' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
-      <GradientDefs id="g-clock" />
-      {/* mostrador */}
-      <circle cx="12" cy="12" r="8.6" stroke="currentColor" strokeWidth="1.8" />
-      {/* ponteiros com gradiente */}
-      <path d="M12 7.4V12l3.2 2.1" stroke="url(#g-clock)" strokeWidth="2" />
-      {/* pino central */}
-      <circle cx="12" cy="12" r="1.1" fill="url(#g-clock)" stroke="none" />
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none" strokeLinecap="round">
+      {/* nucleo do sol */}
+      <circle cx="12" cy="12" r="4.2" fill="#79cfff" stroke="currentColor" strokeWidth="1.5" />
+      {/* raios */}
+      <g stroke="currentColor" strokeWidth="1.8">
+        <path d="M12 2.6v2.8M12 18.6v2.8M2.6 12h2.8M18.6 12h2.8" />
+        <path d="M5.4 5.4l2 2M16.6 16.6l2 2M16.6 7.4l2-2M5.4 18.6l2-2" />
+      </g>
     </svg>
   )
 }
 
-export function TrendingIcon({ size = 24, className = '' }) {
+export function ChartIcon({ size = 24, className = '' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
-      <GradientDefs id="g-trend" />
-      {/* linha de crescimento */}
-      <path
-        d="M3.4 17.6 9 12l3.6 3.6 7.4-7.4"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      {/* ponta da seta com gradiente */}
-      <path d="M14.6 8h5.4v5.4" stroke="url(#g-trend)" strokeWidth="2" />
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <defs>
+        <linearGradient id={GRAD.bars} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#66baf5" />
+          <stop offset="1" stopColor="#1767b0" />
+        </linearGradient>
+      </defs>
+      {/* barras ascendentes */}
+      <g fill={`url(#${GRAD.bars})`}>
+        <rect x="3.6" y="12" width="4.1" height="7.4" rx="1.1" />
+        <rect x="9.95" y="9" width="4.1" height="10.4" rx="1.1" />
+        <rect x="16.3" y="5.6" width="4.1" height="13.8" rx="1.1" />
+      </g>
+      {/* linha de tendencia verde-neon */}
+      <path d="M3.2 12.6Q8 10.4 11.4 12T20.6 5.4" stroke="#8dff58" strokeWidth="1.9" />
+      <path d="M17.4 4.8h3.4v3.4" stroke="#8dff58" strokeWidth="1.9" />
     </svg>
   )
 }
 
 export function ReceiptIcon({ size = 24, className = '' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
-      <GradientDefs id="g-receipt" />
-      {/* corpo do recibo com base serrilhada */}
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">
+      <defs>
+        <linearGradient id={GRAD.paper} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#59bcff" />
+          <stop offset="1" stopColor="#0b4c91" />
+        </linearGradient>
+      </defs>
+      {/* papel com base serrilhada */}
       <path
-        d="M6 3.6h12a.9.9 0 0 1 .9.9v15.7l-2.45-1.5-2.45 1.5-2.45-1.5-2.45 1.5-2.45-1.5L4.2 20.2V4.5a.9.9 0 0 1 .9-.9Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
+        d="M6.2 3.2h11.6v13.4l-1.95 2.4-1.95-2.4-1.95 2.4-1.95-2.4-1.95 2.4-1.95-2.4V3.2Z"
+        fill={`url(#${GRAD.paper})`}
+        stroke="#b7d9ed"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
       />
-      {/* linhas de texto com gradiente */}
-      <path d="M8.4 8.6h7.2M8.4 12.2h4.4" stroke="url(#g-receipt)" strokeWidth="2" />
+      {/* simbolo $ */}
+      <text x="12" y="13.8" textAnchor="middle" fill="#d6f1ff" fontSize="8.5" fontWeight="700" fontFamily="Inter, Arial, sans-serif">$</text>
     </svg>
   )
 }
 
-export function MenuIcon({ size = 24, className = '' }) {
+export function MenuBarsIcon({ size = 24, className = '' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...base}>
-      <GradientDefs id="g-menu" />
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" />
-      {/* destaque no meio */}
-      <circle cx="12" cy="12" r="0" />
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} fill="none">
+      <defs>
+        <linearGradient id={GRAD.menu} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#72c6ff" />
+          <stop offset="1" stopColor="#1d5fa8" />
+        </linearGradient>
+      </defs>
+      {/* tres barras arredondadas */}
+      <g fill={`url(#${GRAD.menu})`} stroke="#a8dcff" strokeWidth="1">
+        <rect x="3.2" y="4.8" width="17.6" height="4" rx="2" />
+        <rect x="3.2" y="10" width="17.6" height="4" rx="2" />
+        <rect x="3.2" y="15.2" width="17.6" height="4" rx="2" />
+      </g>
+      <g stroke="#72c6ff" strokeWidth="1.1" opacity=".65" strokeLinecap="round">
+        <path d="M6.4 6.8h11.2M6.4 12h11.2M6.4 17.2h11.2" />
+      </g>
     </svg>
   )
 }

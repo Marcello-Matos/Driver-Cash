@@ -1,5 +1,6 @@
 import React from 'react'
-import { Menu, ChevronLeft, ChevronRight, Sun, Moon, Bell, Calendar } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sun, Moon, Bell, Calendar } from 'lucide-react'
+import { MenuBarsIcon } from './icons'
 import { useStore } from '../store'
 import { MONTH_NAMES } from '../lib/utils'
 
@@ -30,7 +31,7 @@ export default function Topbar({ title, onToggleSidebar }) {
         onClick={onToggleSidebar}
         aria-label="Abrir menu"
       >
-        <Menu size={24} />
+        <MenuBarsIcon size={24} />
       </button>
 
       <h1 className="font-bold text-lg hidden sm:block">{title}</h1>
