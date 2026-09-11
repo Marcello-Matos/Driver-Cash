@@ -31,6 +31,37 @@ body.no-scroll {
   overflow: hidden;
 }
 
+/* ---------- Animacao leve do logo DriverCash ---------- */
+/* Pulso suave de brilho no ladrilho. */
+.dcg-logo-tile {
+  animation: dcg-glow 3.2s ease-in-out infinite;
+}
+@keyframes dcg-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(33, 211, 107, 0.30)); }
+  50%      { filter: drop-shadow(0 0 13px rgba(33, 211, 107, 0.60)); }
+}
+/* Carroceria balancando como suspensao (rodas ficam no chao). */
+.dcg-truck-body {
+  animation: dcg-bounce 2.4s ease-in-out infinite;
+}
+@keyframes dcg-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.6px); }
+}
+/* Rodas girando devagar, como se estivesse rodando. */
+.dcg-wheel {
+  animation: dcg-spin 1.9s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes dcg-spin {
+  to { transform: rotate(360deg); }
+}
+/* Respeita quem prefere menos movimento (acessibilidade). */
+@media (prefers-reduced-motion: reduce) {
+  .dcg-logo-tile, .dcg-truck-body, .dcg-wheel { animation: none; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
