@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import {
   Wallet, Receipt, DollarSign, Clock, CalendarDays, Car, MapPin,
-  Timer, TrendingUp, Route, Gauge, Info, Trophy, TrendingDown
+  Timer, TrendingUp, Route, Gauge, Info, Trophy, TrendingDown,
+  Home, BarChart3
 } from 'lucide-react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -9,7 +10,7 @@ import {
 } from 'recharts'
 import { useStore } from '../store'
 import { useSelectedMonth } from '../components/Topbar'
-import { computeMonth, prevMonth, delta } from '../lib/metrics'
+import { computeMonth, computeDay, prevMonth, delta } from '../lib/metrics'
 import { brl, numberBR, shortDateBR } from '../lib/utils'
 import { KpiCard, SectionCard } from '../components/ui'
 
@@ -22,6 +23,18 @@ function SummaryTile({ icon: Icon, label, value, hint }) {
       <div className="text-lg font-extrabold mt-1">{value}</div>
       <div className="text-xs font-medium text-slate-600 dark:text-slate-300">{label}</div>
       {hint && <div className="text-[11px] text-slate-400">{hint}</div>}
+    </div>
+  )
+}
+
+function TodayTile({ icon: Icon, iconBg, label, value }) {
+  return (
+    <div className="flex items-center gap-3 py-2.5">
+      <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${iconBg}`}>
+        <Icon size={19} />
+      </div>
+      <div className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">{label}</div>
+      <div className="text-lg font-extrabold text-slate-800 dark:text-slate-100">{value}</div>
     </div>
   )
 }
@@ -57,27 +70,59 @@ export default function Dashboard({ goTo }) {
   const hoursLabel = `${Math.floor(m.hours)}h ${Math.round((m.hours % 1) * 60)}m`
 
   const firstName = (store.profile.name || '').trim().split(' ')[0] || 'Motorista'
-  const today = new Date()
-  const todayLabel = today.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+  const now = new Date()
+  const h = now.getHours()
+  const period = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'
+  const todayLabel = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+
+  // Metricas do dia atual (fallback: totais do mes)
+  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const day = useMemo(() => computeDay(store, todayISO), [store, todayISO])
+  const hasToday = day.recent.length > 0 || day.gross > 0
+  const T = hasToday
+    ? { hours: day.hours, trips: day.trips, km: day.km, gains: day.gross }
+    : { hours: m.hours, trips: m.trips, km: m.km, gains: m.totalGross }
+  const ThoursLabel = `${Math.floor(T.hours)}h ${Math.round((T.hours % 1) * 60)}m`
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Saudacao personalizada (apenas mobile, no estilo do modelo) */}
-      <div className="lg:hidden flex items-center gap-3">
-        {store.profile.avatar_url ? (
-          <img src={store.profile.avatar_url} alt="" className="w-11 h-11 rounded-full object-cover ring-2 ring-brand-500/40" />
-        ) : (
-          <div className="w-11 h-11 rounded-full bg-brand-500/15 ring-1 ring-brand-500/30 flex items-center justify-center text-brand-400 font-bold">
-            {firstName[0].toUpperCase()}
+      {/* Saudacao + botao inicio (no estilo do modelo) */}
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="text-2xl font-extrabold leading-tight truncate">
+            {period}, {firstName}!
           </div>
-        )}
+          <div className="text-sm text-slate-400 capitalize">{todayLabel}</div>
+        </div>
+        <button
+          onClick={() => goTo('hoje')}
+          className="w-11 h-11 rounded-full bg-white dark:bg-slate-700 ring-1 ring-slate-200 dark:ring-slate-600 shadow-sm flex items-center justify-center text-slate-600 dark:text-slate-200 hover:text-brand-500 transition-colors"
+          title="Ir para o resumo diário"
+        >
+          <Home size={19} />
+        </button>
+      </div>
+
+      {/* Hero: ganhos no mes (amarelo, no estilo do modelo) */}
+      <div className="rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 dark:from-amber-400 dark:to-amber-500 p-4 sm:p-5 flex items-center gap-4 shadow-lg shadow-amber-500/20">
+        <div className="w-12 h-12 rounded-full bg-black/15 flex items-center justify-center text-white shrink-0">
+          <BarChart3 size={22} />
+        </div>
         <div className="min-w-0">
-          <div className="text-lg font-extrabold leading-tight truncate">
-            Olá, {firstName} <span aria-hidden="true">👋</span>
-          </div>
-          <div className="text-xs text-slate-400 capitalize">{todayLabel}</div>
+          <div className="text-sm font-semibold text-white/90">Ganhos no mês</div>
+          <div className="text-3xl sm:text-4xl font-extrabold text-white truncate">{brl(m.totalGross)}</div>
         </div>
       </div>
+
+      {/* Metricas do dia atual (lista, no estilo do modelo) */}
+      <SectionCard title={hasToday ? 'Métricas de hoje' : 'Métricas do mês'}>
+        <div className="divide-y divide-slate-100 dark:divide-slate-700">
+          <TodayTile icon={Clock} iconBg="bg-sky-100 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400" label="Horas online" value={ThoursLabel} />
+          <TodayTile icon={TrendingUp} iconBg="bg-brand-100 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400" label="Corridas concluídas" value={numberBR(T.trips)} />
+          <TodayTile icon={Car} iconBg="bg-orange-100 text-orange-500 dark:bg-orange-500/15 dark:text-orange-400" label="Km rodados" value={`${numberBR(T.km)} km`} />
+          <TodayTile icon={DollarSign} iconBg="bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400" label={hasToday ? 'Ganhos de hoje' : 'Ganhos no mês'} value={brl(T.gains)} />
+        </div>
+      </SectionCard>
 
       {/* KPI cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
