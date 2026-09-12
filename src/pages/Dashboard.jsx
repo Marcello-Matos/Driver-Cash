@@ -56,10 +56,31 @@ export default function Dashboard({ goTo }) {
 
   const hoursLabel = `${Math.floor(m.hours)}h ${Math.round((m.hours % 1) * 60)}m`
 
+  const firstName = (store.profile.name || '').trim().split(' ')[0] || 'Motorista'
+  const today = new Date()
+  const todayLabel = today.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Saudacao personalizada (apenas mobile, no estilo do modelo) */}
+      <div className="lg:hidden flex items-center gap-3">
+        {store.profile.avatar_url ? (
+          <img src={store.profile.avatar_url} alt="" className="w-11 h-11 rounded-full object-cover ring-2 ring-brand-500/40" />
+        ) : (
+          <div className="w-11 h-11 rounded-full bg-brand-500/15 ring-1 ring-brand-500/30 flex items-center justify-center text-brand-400 font-bold">
+            {firstName[0].toUpperCase()}
+          </div>
+        )}
+        <div className="min-w-0">
+          <div className="text-lg font-extrabold leading-tight truncate">
+            Olá, {firstName} <span aria-hidden="true">👋</span>
+          </div>
+          <div className="text-xs text-slate-400 capitalize">{todayLabel}</div>
+        </div>
+      </div>
+
       {/* KPI cards */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         <KpiCard icon={Wallet} label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
         <KpiCard icon={Receipt} iconBg="bg-rose-500/15 text-rose-400 ring-rose-500/30 shadow-[0_0_14px_rgba(244,63,94,0.22)]" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
         <KpiCard icon={DollarSign} iconBg="bg-sky-500/15 text-sky-400 ring-sky-500/30 shadow-[0_0_14px_rgba(14,165,233,0.22)]" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />

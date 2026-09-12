@@ -5,13 +5,11 @@ import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 export function KpiCard({ icon: Icon, iconBg, label, value, delta, deltaLabel, subtitle }) {
   const up = delta != null && delta >= 0
   return (
-    <div className="card p-4 sm:p-5 flex flex-col gap-2 sm:gap-3 rounded-2xl">
-      <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center ring-1 shadow-[0_0_14px_rgba(163,230,53,0.28)] ${iconBg || 'bg-brand-500/15 text-brand-400 ring-brand-500/30'}`}>
-          <Icon size={20} />
-        </div>
+    <div className="card p-4 sm:p-5 flex flex-row items-center gap-3 sm:flex-col sm:items-stretch sm:gap-3 rounded-2xl">
+      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ring-1 shadow-[0_0_14px_rgba(163,230,53,0.28)] shrink-0 ${iconBg || 'bg-brand-500/15 text-brand-400 ring-brand-500/30'}`}>
+        <Icon size={20} />
       </div>
-      <div>
+      <div className="min-w-0 flex-1 sm:flex-none">
         <div className="text-[11px] sm:text-xs font-medium uppercase tracking-wide text-slate-400">{label}</div>
         <div className="text-xl sm:text-2xl font-extrabold mt-1">{value}</div>
         {delta != null ? (
