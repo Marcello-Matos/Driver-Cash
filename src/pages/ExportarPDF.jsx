@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { FileDown, Loader2, Layers, CalendarRange } from 'lucide-react'
 import { useStore } from '../store'
 import { exportRelatorioPdf } from '../lib/pdfExport'
 import { SectionCard } from '../components/ui'
-import { brl, todayISO } from '../lib/utils'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from 'recharts'
+import { brl, todayISO, MONTH_NAMES, categoryColor } from '../lib/utils'
 
 export default function ExportarPDF() {
   const { profile, earnings, expenses } = useStore()
@@ -22,6 +23,40 @@ export default function ExportarPDF() {
   const exp = selExpenses.reduce((s, e) => s + Number(e.amount || 0), 0)
   const invalid = usePeriod && from > to
   const nothing = selEarnings.length === 0 && selExpenses.length === 0
+
+  const chartData = useMemo(() => {
+    const arr = []
+    const t = new Date()
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(t.getFullYear(), t.getMonth() - i, 1)
+      arr.push({
+        key: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'),
+        mes: MONTH_NAMES[d.getMonth()].slice(0, 3) + '/' + String(d.getFullYear()).slice(2),
+        Ganhos: 0,
+        Despesas: 0
+      })
+    }
+    selEarnings.forEach((e) => {
+      const b = arr.find((x) => x.key === String(e.date).slice(0, 7))
+      if (b) b.Ganhos += Number(e.gross || 0)
+    })
+    selExpenses.forEach((e) => {
+      const b = arr.find((x) => x.key === String(e.date).slice(0, 7))
+      if (b) b.Despesas += Number(e.amount || 0)
+    })
+    return arr.map(({ key, ...r }) => ({ ...r, Lucro: r.Ganhos - r.Despesas }))
+  }, [selEarnings, selExpenses])
+
+  const catData = useMemo(() => {
+    const byCat = {}
+    selExpenses.forEach((e) => {
+      const k = e.category || 'Outros'
+      byCat[k] = (byCat[k] || 0) + Number(e.amount || 0)
+    })
+    return Object.keys(byCat)
+      .sort((a, b) => byCat[b] - byCat[a])
+      .map((k) => ({ name: k, value: byCat[k] }))
+  }, [selExpenses])
 
   const handleExport = () => {
     setBusy(true)
@@ -97,6 +132,42 @@ export default function ExportarPDF() {
           </div>
         </div>
 
+        <div className='mt-6 space-y-6'>
+          <SectionCard title='Evolução dos últimos 6 meses'>
+            <div className='h-[340px]'>
+              <ResponsiveContainer>
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray='3 3' stroke='#94a3b833' vertical={false} />
+                  <XAxis dataKey='mes' tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={50} />
+                  <Tooltip formatter={(v) => brl(v)} contentStyle={{ borderRadius: 12, border: 'none', background: '#0f172a', color: '#fff' }} />
+                  <Legend />
+                  <Bar dataKey='Ganhos' fill='#22c55e' radius={[6, 6, 0, 0]} />
+                  <Bar dataKey='Despesas' fill='#f43f5e' radius={[6, 6, 0, 0]} />
+                  <Bar dataKey='Lucro' fill='#3b82f6' radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </SectionCard>
+
+          {catData.length > 0 && (
+            <SectionCard title='Despesas por categoria'>
+              <div className='h-[320px]'>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={catData} dataKey='value' nameKey='name' innerRadius={85} outerRadius={125} paddingAngle={2}>
+                      {catData.map((c) => (
+                        <Cell key={c.name} fill={categoryColor(c.name)} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(v) => brl(v)} contentStyle={{ borderRadius: 12, border: 'none', background: '#0f172a', color: '#fff' }} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </SectionCard>
+          )}
+        </div>
         {invalid && <p className='text-sm text-rose-500 mt-2'>A data inicial deve ser anterior à data final.</p>}
         {!invalid && nothing && <p className='text-sm text-slate-400 mt-2'>Nenhum lançamento encontrado para o período selecionado.</p>}
 
