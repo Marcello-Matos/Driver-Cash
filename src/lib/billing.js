@@ -6,7 +6,7 @@ export const PLAN_NAME = 'DriverCash PRO'
 // Limites do plano Gratuito
 export const FREE_EXPENSES_PER_DAY = 3
 // Páginas exclusivas do Pro (as demais são liberadas no Gratuito)
-export const PRO_PAGES = ['hoje', 'combustivel', 'manutencao', 'relatorios', 'calendario']
+export const PRO_PAGES = ['hoje', 'combustivel', 'manutencao', 'relatorios', 'calendario', 'exportar']
 export const isProPage = (page) => PRO_PAGES.includes(page)
 
 // Planos de assinatura do Mercado Pago (links de checkout do preapproval_plan)

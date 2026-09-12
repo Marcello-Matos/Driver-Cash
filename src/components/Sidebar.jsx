@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
   Fuel, Wrench, Car,
-  Target, FileBarChart, CalendarDays, Settings, X, Lock, Crown, LogOut
+  Target, FileBarChart, FileDown, CalendarDays, Settings, X, Lock, Crown, LogOut
 } from 'lucide-react'
 import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon } from './icons'
 import LogoMark from './Logo'
@@ -19,6 +19,7 @@ const NAV = [
   { key: 'veiculos', label: 'Veículos', icon: Car },
   { key: 'metas', label: 'Metas', icon: Target },
   { key: 'relatorios', label: 'Relatórios', icon: FileBarChart },
+  { key: 'exportar', label: 'Exportar PDF', icon: FileDown },
   { key: 'calendario', label: 'Calendário', icon: CalendarDays },
   { key: 'configuracoes', label: 'Configurações', icon: Settings },
   { key: 'assinatura', label: 'Assinatura', icon: Crown }

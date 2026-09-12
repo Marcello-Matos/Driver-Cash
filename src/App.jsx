@@ -19,6 +19,7 @@ import Veiculos from './pages/Veiculos'
 import Metas from './pages/Metas'
 import Relatorios from './pages/Relatorios'
 import Calendario from './pages/Calendario'
+import ExportarPDF from './pages/ExportarPDF'
 import Configuracoes from './pages/Configuracoes'
 import { isProPage, verifyPayment } from './lib/billing'
 import { readEntry, LANDING_URL, markKnownDevice, getPendingPreapproval, setPendingPreapproval } from './lib/entry'
@@ -36,6 +37,7 @@ const PAGES = {
   veiculos: { title: 'Veículos', component: Veiculos },
   metas: { title: 'Metas', component: Metas },
   relatorios: { title: 'Relatórios', component: Relatorios },
+  exportar: { title: 'Exportar PDF', component: ExportarPDF },
   calendario: { title: 'Calendário', component: Calendario },
   configuracoes: { title: 'Configurações', component: Configuracoes },
   assinatura: { title: 'Assinatura', component: Paywall }
