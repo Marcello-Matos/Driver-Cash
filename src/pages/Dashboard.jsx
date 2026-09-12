@@ -16,7 +16,7 @@ import { KpiCard, SectionCard } from '../components/ui'
 function SummaryTile({ icon: Icon, label, value, hint }) {
   return (
     <div className="flex flex-col items-center text-center gap-1 py-3">
-      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center text-brand-500">
+      <div className="w-10 h-10 rounded-xl bg-brand-500/15 ring-1 ring-brand-500/30 flex items-center justify-center text-brand-500 dark:text-brand-400">
         <Icon size={18} />
       </div>
       <div className="text-lg font-extrabold mt-1">{value}</div>
@@ -60,10 +60,10 @@ export default function Dashboard({ goTo }) {
     <div className="space-y-4 sm:space-y-6">
       {/* KPI cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        <KpiCard icon={Wallet} iconBg="bg-brand-500" color="bg-emerald-500" label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={Receipt} iconBg="bg-rose-500" color="bg-rose-500" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={DollarSign} iconBg="bg-brand-500" color="bg-violet-600" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />
-        <KpiCard icon={Clock} iconBg="bg-blue-500" color="bg-blue-500" label="Lucro por hora" value={brl(m.perHour)} delta={dPerHour} deltaLabel="vs mês anterior" subtitle={`${hoursLabel} trabalhadas`} />
+        <KpiCard icon={Wallet} label="Ganhos no mês" value={brl(m.totalGross)} delta={dGross} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={Receipt} iconBg="bg-rose-500/15 text-rose-400 ring-rose-500/30 shadow-[0_0_14px_rgba(244,63,94,0.22)]" label="Total de despesas" value={brl(m.totalExpenses)} delta={dExp} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={DollarSign} iconBg="bg-sky-500/15 text-sky-400 ring-sky-500/30 shadow-[0_0_14px_rgba(14,165,233,0.22)]" label="Lucro líquido" value={brl(m.netProfit)} delta={dNet} deltaLabel="vs mês anterior" subtitle="—" />
+        <KpiCard icon={Clock} iconBg="bg-violet-500/15 text-violet-400 ring-violet-500/30 shadow-[0_0_14px_rgba(139,92,246,0.22)]" label="Lucro por hora" value={brl(m.perHour)} delta={dPerHour} deltaLabel="vs mês anterior" subtitle={`${hoursLabel} trabalhadas`} />
       </div>
 
       {/* Resumo + Evolução */}
@@ -83,7 +83,7 @@ export default function Dashboard({ goTo }) {
 
         <SectionCard title="Evolução de ganhos e despesas">
           <div className="flex items-center gap-4 mb-2 text-xs">
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-brand-500" />Ganhos (R$)</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-brand-400" />Ganhos (R$)</span>
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-rose-500" />Despesas (R$)</span>
           </div>
           <div className="h-[260px] -ml-2">
@@ -91,8 +91,8 @@ export default function Dashboard({ goTo }) {
               <AreaChart data={m.daily} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gGanhos" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#a3e635" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#a3e635" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gDespesas" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.35} />
@@ -103,7 +103,7 @@ export default function Dashboard({ goTo }) {
                 <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} interval={4} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={40} />
                 <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="ganhos" name="Ganhos" stroke="#22c55e" strokeWidth={2} fill="url(#gGanhos)" />
+                <Area type="monotone" dataKey="ganhos" name="Ganhos" stroke="#a3e635" strokeWidth={2} fill="url(#gGanhos)" />
                 <Area type="monotone" dataKey="despesas" name="Despesas" stroke="#f43f5e" strokeWidth={2} fill="url(#gDespesas)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -206,7 +206,7 @@ function RecentCard({ recent, onSeeAll }) {
                 const isGain = r.type === 'ganho'
                 return (
                   <div key={r.id} className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${isGain ? 'bg-brand-500' : 'bg-rose-500'}`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isGain ? 'bg-brand-500/15 text-brand-500 dark:text-brand-400 ring-1 ring-brand-500/30' : 'bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/30'}`}>
                       {isGain ? <TrendingUp size={15} /> : <TrendingDown size={15} />}
                     </div>
                     <div className="flex-1 min-w-0">

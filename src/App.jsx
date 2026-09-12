@@ -43,7 +43,7 @@ const PAGES = {
 
 function FullScreenLoader() {
   return (
-    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400">
+    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-[#0a101f] text-slate-400">
       <Loader2 className="animate-spin" size={28} />
     </div>
   )
@@ -95,7 +95,7 @@ function AppShell() {
   const Current = PAGES[page]?.component || Dashboard
 
   return (
-    <div className="app-shell bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex">
+    <div className="app-shell bg-slate-100 dark:bg-[#0a101f] text-slate-800 dark:text-slate-100 flex">
       <Sidebar
         page={page}
         setPage={(p) => {
