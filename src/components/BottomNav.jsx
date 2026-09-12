@@ -1,13 +1,13 @@
 import React from 'react'
 import { Lock } from 'lucide-react'
-import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon, MenuBarsIcon } from './icons'
+import { ReceiptIcon, MenuBarsIcon } from './icons'
 import { useStore } from '../store'
 import { isProPage } from '../lib/billing'
 
 const ITEMS = [
-  { key: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
-  { key: 'hoje', label: 'Hoje', icon: SunIcon },
-  { key: 'ganhos', label: 'Ganhos', icon: ChartIcon },
+  { key: 'dashboard', label: 'Dashboard', img: '/01-crescimento.svg' },
+  { key: 'hoje', label: 'Hoje', img: '/05-sol.svg' },
+  { key: 'ganhos', label: 'Ganhos', img: '/02-dinheiro.svg' },
   { key: 'despesas', label: 'Despesas', icon: ReceiptIcon },
 ]
 
@@ -19,7 +19,7 @@ export default function BottomNav({ page, setPage, onToggleMenu }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 text-slate-400 border-t border-slate-800 pb-[env(safe-area-inset-bottom)] lg:hidden">
       <div className="flex items-center justify-around h-16 px-2">
-        {ITEMS.map(({ key, label, icon: Icon }) => {
+        {ITEMS.map(({ key, label, img, icon: Icon }) => {
           const active = page === key
           return (
             <button
@@ -31,10 +31,12 @@ export default function BottomNav({ page, setPage, onToggleMenu }) {
                   : 'hover:text-slate-200 hover:bg-slate-800/50'}`}
             >
               <span className="relative">
-                <Icon
-                  size={22}
-                  className={`${ICON_FX} ${active ? 'text-sky-300' : 'text-slate-400 group-hover:text-sky-300'}`}
-                />
+                {img ? (
+                  <img src={img} alt="" draggable="false"
+                    className={`nav-icon-3d w-7 h-7 ${active ? "nav-icon-active" : ""}`} />
+                  ) : (
+                    <Icon size={22} className={`${ICON_FX} ${active ? 'text-sky-300' : 'text-slate-400 group-hover:text-sky-300'}`} />
+                  )}
                 {!access.isPro && isProPage(key) && (
                   <Lock size={10} className="absolute -top-1 -right-2 text-amber-400" />
                 )}

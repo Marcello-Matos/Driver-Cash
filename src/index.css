@@ -180,3 +180,8 @@ body.no-scroll {
 .group:hover .nav-icon-active {
   box-shadow: 0 9px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.5);
 }
+
+.group:active .nav-icon-3d {
+  transform: translateY(0) scale(0.92);
+  filter: brightness(0.95);
+}
