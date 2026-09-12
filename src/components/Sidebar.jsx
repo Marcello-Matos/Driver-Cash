@@ -1,28 +1,25 @@
 import React, { useState } from 'react'
-import {
-  Fuel, Wrench, Car,
-  Target, FileBarChart, FileDown, CalendarDays, Settings, X, Lock, Crown, LogOut
-} from 'lucide-react'
-import { DashboardIcon, SunIcon, ChartIcon, ReceiptIcon } from './icons'
+import { X, Lock, LogOut } from 'lucide-react'
+import { ReceiptIcon } from './icons'
 import LogoMark from './Logo'
 import { useStore } from '../store'
 import { isProPage } from '../lib/billing'
 import { useLockBodyScroll } from '../lib/useLockBodyScroll'
 
 const NAV = [
-  { key: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
-  { key: 'hoje', label: 'Resumo diário', icon: SunIcon },
-  { key: 'ganhos', label: 'Ganhos', icon: ChartIcon },
+  { key: 'dashboard', label: 'Dashboard', img: '/01-crescimento.svg' },
+  { key: 'hoje', label: 'Resumo diário', img: '/05-sol.svg' },
+  { key: 'ganhos', label: 'Ganhos', img: '/02-dinheiro.svg' },
   { key: 'despesas', label: 'Despesas', icon: ReceiptIcon },
-  { key: 'combustivel', label: 'Combustível', icon: Fuel },
-  { key: 'manutencao', label: 'Manutenção', icon: Wrench },
-  { key: 'veiculos', label: 'Veículos', icon: Car },
-  { key: 'metas', label: 'Metas', icon: Target },
-  { key: 'relatorios', label: 'Relatórios', icon: FileBarChart },
-  { key: 'exportar', label: 'Exportar PDF', icon: FileDown },
-  { key: 'calendario', label: 'Calendário', icon: CalendarDays },
-  { key: 'configuracoes', label: 'Configurações', icon: Settings },
-  { key: 'assinatura', label: 'Assinatura', icon: Crown }
+  { key: 'combustivel', label: 'Combustível', img: '/03-combustivel.svg' },
+  { key: 'manutencao', label: 'Manutenção', img: '/04-ferramenta.svg' },
+  { key: 'veiculos', label: 'Veículos', img: '/12-carro.svg' },
+  { key: 'metas', label: 'Metas', img: '/07-meta.svg' },
+  { key: 'relatorios', label: 'Relatórios', img: '/06-relatorio.svg' },
+  { key: 'exportar', label: 'Exportar PDF', img: '/08-pdf.svg' },
+  { key: 'calendario', label: 'Calendário', img: '/09-calendario.svg' },
+  { key: 'configuracoes', label: 'Configurações', img: '/10-configuracoes.svg' },
+  { key: 'assinatura', label: 'Assinatura', img: '/11-coroa.svg' }
 ]
 
 export default function Sidebar({ page, setPage, open, onClose }) {
@@ -59,18 +56,23 @@ export default function Sidebar({ page, setPage, open, onClose }) {
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {NAV.map(({ key, label, icon: Icon }) => {
+          {NAV.map(({ key, label, img, icon: Icon }) => {
             const active = page === key
             return (
               <button
                 key={key}
                 onClick={() => setPage(key)}
-                className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
+                className={`nav-btn-3d group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
                   ${active
                     ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
-                <Icon size={18} className="shrink-0 transition-transform duration-200 ease-out group-hover:scale-125" />
+                {img ? (
+                  <img src={img} alt="" draggable="false"
+                    className={`nav-icon-3d w-7 h-7 shrink-0 ${active ? "nav-icon-active" : ""}`} />
+                ) : (
+                  <Icon size={18} className="shrink-0 transition-transform duration-200 ease-out group-hover:scale-125" />
+                )}
                 {label}
                 {!access.isPro && isProPage(key) && <Lock size={13} className="ml-auto opacity-60" />}
                 {key === 'assinatura' && !access.isPro && (

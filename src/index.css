@@ -147,3 +147,36 @@ body.no-scroll {
     font-size: inherit;
   }
 }
+
+/* Icones 3D do menu lateral: elevacao suave, brilho colorido no hover
+   e efeito de pressao ao clicar. */
+.nav-btn-3d {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+  will-change: transform;
+}
+.nav-btn-3d:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+.nav-btn-3d:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
+}
+.nav-icon-3d {
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform .2s ease-out, box-shadow .2s ease-out, filter .2s ease-out;
+  will-change: transform;
+  user-select: none;
+}
+.group:hover .nav-icon-3d {
+  transform: translateY(-2px) scale(1.16) rotate(-4deg);
+  filter: saturate(1.25) brightness(1.1);
+  box-shadow: 0 9px 20px rgba(163, 230, 53, 0.4), 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+.nav-icon-active {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55), 0 0 14px rgba(255, 255, 255, 0.35);
+}
+.group:hover .nav-icon-active {
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.5);
+}
