@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import { StoreProvider, useStore } from './store'
 import Auth from './components/Auth'
@@ -9,19 +9,17 @@ import TrialBanner from './components/TrialBanner'
 import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Topbar from './components/Topbar'
-
-// Cod splitting: cada tela carrega sob demanda (arquivo separado)
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const ResumoDiario = lazy(() => import('./pages/ResumoDiario'))
-const Ganhos = lazy(() => import('./pages/Ganhos'))
-const Despesas = lazy(() => import('./pages/Despesas'))
-const Combustivel = lazy(() => import('./pages/Combustivel'))
-const Manutencao = lazy(() => import('./pages/Manutencao'))
-const Veiculos = lazy(() => import('./pages/Veiculos'))
-const Metas = lazy(() => import('./pages/Metas'))
-const Relatorios = lazy(() => import('./pages/Relatorios'))
-const Calendario = lazy(() => import('./pages/Calendario'))
-const Configuracoes = lazy(() => import('./pages/Configuracoes'))
+import Dashboard from './pages/Dashboard'
+import ResumoDiario from './pages/ResumoDiario'
+import Ganhos from './pages/Ganhos'
+import Despesas from './pages/Despesas'
+import Combustivel from './pages/Combustivel'
+import Manutencao from './pages/Manutencao'
+import Veiculos from './pages/Veiculos'
+import Metas from './pages/Metas'
+import Relatorios from './pages/Relatorios'
+import Calendario from './pages/Calendario'
+import Configuracoes from './pages/Configuracoes'
 import { isProPage, verifyPayment } from './lib/billing'
 import { readEntry, LANDING_URL, markKnownDevice, getPendingPreapproval, setPendingPreapproval } from './lib/entry'
 
@@ -45,7 +43,7 @@ const PAGES = {
 
 function FullScreenLoader() {
   return (
-    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-[#0a101f] text-slate-400">
+    <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400">
       <Loader2 className="animate-spin" size={28} />
     </div>
   )
@@ -97,7 +95,7 @@ function AppShell() {
   const Current = PAGES[page]?.component || Dashboard
 
   return (
-    <div className="app-shell bg-slate-100 dark:bg-[#0a101f] text-slate-800 dark:text-slate-100 flex">
+    <div className="app-shell bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex">
       <Sidebar
         page={page}
         setPage={(p) => {
@@ -115,9 +113,7 @@ function AppShell() {
         />
         <TrialBanner goTo={setPage} page={page} />
         <main className="flex-1 p-4 sm:p-6 max-w-[1400px] w-full mx-auto">
-          <Suspense fallback={<FullScreenLoader />}>
-            {locked ? <Paywall feature={PAGES[page]?.title} goTo={setPage} /> : <Current goTo={setPage} />}
-          </Suspense>
+          {locked ? <Paywall feature={PAGES[page]?.title} goTo={setPage} /> : <Current goTo={setPage} />}
         </main>
       </div>
 

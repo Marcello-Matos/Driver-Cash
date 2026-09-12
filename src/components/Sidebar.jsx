@@ -38,7 +38,7 @@ export default function Sidebar({ page, setPage, open, onClose }) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-40 app-screen w-64 bg-[#0d1526] text-slate-300 flex flex-col transition-transform duration-200
+        className={`fixed top-0 left-0 z-40 app-screen w-64 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-200
           pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]
           ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
       >
@@ -66,8 +66,8 @@ export default function Sidebar({ page, setPage, open, onClose }) {
                 onClick={() => setPage(key)}
                 className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
                   ${active
-                    ? 'bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                    ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <Icon size={18} className="shrink-0 transition-transform duration-200 ease-out group-hover:scale-125" />
                 {label}
@@ -84,7 +84,7 @@ export default function Sidebar({ page, setPage, open, onClose }) {
         <div className="p-3 border-t border-slate-800 flex items-center gap-2">
           <button
             onClick={() => setPage('configuracoes')}
-            className="flex-1 min-w-0 flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/5 transition"
+            className="flex-1 min-w-0 flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-slate-800 transition"
           >
             <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white font-semibold overflow-hidden shrink-0">
               {profile.avatar_url && !avatarError ? (
@@ -106,7 +106,7 @@ export default function Sidebar({ page, setPage, open, onClose }) {
           <button
             onClick={signOut}
             title="Sair da conta"
-            className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-rose-400 transition"
+            className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-rose-400 transition"
           >
             <LogOut size={18} />
           </button>

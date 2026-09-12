@@ -17,7 +17,7 @@ const ICON_FX =
 export default function BottomNav({ page, setPage, onToggleMenu }) {
   const { access } = useStore()
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0d1526] text-slate-400 border-t border-slate-800/80 pb-[env(safe-area-inset-bottom)] lg:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 text-slate-400 border-t border-slate-800 pb-[env(safe-area-inset-bottom)] lg:hidden">
       <div className="flex items-center justify-around h-16 px-2">
         {ITEMS.map(({ key, label, icon: Icon }) => {
           const active = page === key
@@ -27,8 +27,8 @@ export default function BottomNav({ page, setPage, onToggleMenu }) {
               onClick={() => setPage(key)}
               className={`group flex flex-col items-center justify-center gap-1 w-16 h-14 rounded-xl text-[10px] font-medium transition
                 ${active
-                  ? 'text-white bg-brand-500/10 ring-1 ring-brand-500/40'
-                  : 'hover:text-slate-200 hover:bg-white/5'}`}
+                  ? 'text-white bg-slate-800 ring-1 ring-emerald-400/30'
+                  : 'hover:text-slate-200 hover:bg-slate-800/50'}`}
             >
               <span className="relative">
                 <Icon
@@ -39,7 +39,7 @@ export default function BottomNav({ page, setPage, onToggleMenu }) {
                   <Lock size={10} className="absolute -top-1 -right-2 text-amber-400" />
                 )}
               </span>
-              <span className={`transition-colors ${active ? 'text-brand-300' : 'group-hover:text-sky-200'}`}>
+              <span className={`transition-colors ${active ? 'text-emerald-300' : 'group-hover:text-sky-200'}`}>
                 {label}
               </span>
             </button>
@@ -47,7 +47,7 @@ export default function BottomNav({ page, setPage, onToggleMenu }) {
         })}
         <button
           onClick={onToggleMenu}
-          className="group flex flex-col items-center justify-center gap-1 w-16 h-14 rounded-xl text-[10px] font-medium hover:text-slate-200 hover:bg-white/5 transition"
+          className="group flex flex-col items-center justify-center gap-1 w-16 h-14 rounded-xl text-[10px] font-medium hover:text-slate-200 hover:bg-slate-800/50 transition"
         >
           <MenuBarsIcon size={22} className={`${ICON_FX} text-slate-400 group-hover:text-sky-300`} />
           <span className="transition-colors group-hover:text-sky-200">Mais</span>
