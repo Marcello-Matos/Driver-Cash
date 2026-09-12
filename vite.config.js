@@ -34,6 +34,24 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Vendor em chunks proprios: cache + carregamento sob demanda
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          // Recharts e suas dependencias (d3, etc.) ficam num chunk separado
+          if (id.includes('recharts') || id.includes('victory-vendor') || id.includes('/d3-') || id.includes('internmap')) {
+            return 'vendor-charts'
+          }
+          if (id.includes('@supabase')) return 'vendor-supabase'
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler')) {
+            return 'vendor-react'
+          }
+        }
+      }
+    }
+  },
   server: {
     port: 5173,
     open: true
