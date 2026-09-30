@@ -42,11 +42,11 @@ export default function Despesas({ fixedCategory }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="card p-4"><div className="text-xs text-slate-400">Total de despesas</div><div className="text-xl font-extrabold mt-1 text-rose-500">{brl(total)}</div></div>
-        <div className="card p-4"><div className="text-xs text-slate-400">Lançamentos</div><div className="text-xl font-extrabold mt-1">{rows.length}</div></div>
-        <div className="card p-4"><div className="text-xs text-slate-400">Maior despesa</div><div className="text-xl font-extrabold mt-1">{brl(Math.max(0, ...rows.map((r) => Number(r.amount || 0))))}</div></div>
-        <div className="card p-4"><div className="text-xs text-slate-400">Média por lançamento</div><div className="text-xl font-extrabold mt-1">{brl(rows.length ? total / rows.length : 0)}</div></div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="card p-3 sm:p-4"><div className="text-[11px] sm:text-xs text-slate-400">Total de despesas</div><div className="text-lg sm:text-xl font-extrabold mt-1 text-rose-500">{brl(total)}</div></div>
+        <div className="card p-3 sm:p-4"><div className="text-[11px] sm:text-xs text-slate-400">Lançamentos</div><div className="text-lg sm:text-xl font-extrabold mt-1">{rows.length}</div></div>
+        <div className="card p-3 sm:p-4"><div className="text-[11px] sm:text-xs text-slate-400">Maior despesa</div><div className="text-lg sm:text-xl font-extrabold mt-1">{brl(Math.max(0, ...rows.map((r) => Number(r.amount || 0))))}</div></div>
+        <div className="card p-3 sm:p-4"><div className="text-[11px] sm:text-xs text-slate-400">Média por lançamento</div><div className="text-lg sm:text-xl font-extrabold mt-1">{brl(rows.length ? total / rows.length : 0)}</div></div>
       </div>
 
       <SectionCard
@@ -64,8 +64,8 @@ export default function Despesas({ fixedCategory }) {
         {rows.length === 0 ? (
           <EmptyState icon={Receipt} title="Nenhuma despesa registrada" subtitle="Cadastre seus gastos com combustível, manutenção e outros." action={<button className="btn-primary" onClick={openNew}><Plus size={16} /> Adicionar despesa</button>} />
         ) : (
-          <div className="overflow-x-auto -mx-2">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+            <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="text-left text-xs text-slate-400 border-b border-slate-100 dark:border-slate-700">
                   <th className="py-2 px-2">Data</th>

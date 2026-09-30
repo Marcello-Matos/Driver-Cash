@@ -49,7 +49,7 @@ export default function Ganhos() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatMini label="Total de ganhos" value={brl(totals.gross)} />
         <StatMini label="Corridas" value={numberBR(totals.trips)} />
         <StatMini label="Km rodados" value={`${numberBR(totals.km)} km`} />
@@ -63,8 +63,8 @@ export default function Ganhos() {
         {rows.length === 0 ? (
           <EmptyState icon={TrendingUp} title="Nenhum ganho registrado" subtitle="Adicione suas corridas diárias para acompanhar seus ganhos." action={<button className="btn-primary" onClick={openNew}><Plus size={16} /> Adicionar ganho</button>} />
         ) : (
-          <div className="overflow-x-auto -mx-2">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+            <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="text-left text-xs text-slate-400 border-b border-slate-100 dark:border-slate-700">
                   <th className="py-2 px-2">Data</th>
@@ -129,9 +129,9 @@ export default function Ganhos() {
 
 function StatMini({ label, value }) {
   return (
-    <div className="card p-4">
-      <div className="text-xs text-slate-400">{label}</div>
-      <div className="text-xl font-extrabold mt-1">{value}</div>
+    <div className="card p-3 sm:p-4">
+      <div className="text-[11px] sm:text-xs text-slate-400">{label}</div>
+      <div className="text-lg sm:text-xl font-extrabold mt-1">{value}</div>
     </div>
   )
 }

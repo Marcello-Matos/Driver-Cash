@@ -177,7 +177,7 @@ export default function ResumoDiario({ goTo }) {
           </div>
         }
       >
-        <div className="h-[200px] -ml-2">
+        <div className="h-[170px] sm:h-[200px] -ml-2">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>

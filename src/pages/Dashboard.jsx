@@ -86,7 +86,7 @@ export default function Dashboard({ goTo }) {
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-brand-500" />Ganhos (R$)</span>
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-rose-500" />Despesas (R$)</span>
           </div>
-          <div className="h-[260px] -ml-2">
+          <div className="h-[220px] sm:h-[260px] -ml-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={m.daily} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>

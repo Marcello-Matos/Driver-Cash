@@ -45,7 +45,7 @@ export default function Relatorios() {
         title="Comparativo dos últimos 6 meses"
         action={<button className="btn-primary" onClick={exportCSV}><Download size={16} /> Exportar CSV</button>}
       >
-        <div className="h-[340px]">
+        <div className="h-[260px] sm:h-[340px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#94a3b833" vertical={false} />
