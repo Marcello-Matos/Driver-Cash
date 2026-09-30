@@ -23,6 +23,16 @@ export function isKnownDevice() {
   try { return localStorage.getItem(KNOWN_KEY) === '1' } catch { return false }
 }
 
+// App instalado na tela inicial (PWA standalone): nunca redireciona para a landing.
+// O ícone tem armazenamento próprio (principalmente no iPhone), então o aparelho
+// pareceria "desconhecido" mesmo depois do login — quem instalou quer entrar no app.
+function isStandaloneApp() {
+  try {
+    return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true // Safari/iOS
+  } catch { return false }
+}
+
 export function getPendingPreapproval() {
   try { return localStorage.getItem(PENDING_KEY) || '' } catch { return '' }
 }
@@ -65,6 +75,6 @@ export function readEntry() {
     uber: uber || null,
     authMode: fromPayment || wantsSignup ? 'signup' : wantsLogin ? 'login' : null,
     fromPayment,
-    redirectToLanding: !cameFromLink && !isKnownDevice()
+    redirectToLanding: !cameFromLink && !isKnownDevice() && !isStandaloneApp()
   }
 }
