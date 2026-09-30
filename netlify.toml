@@ -2,6 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Redireciona todas as rotas para o index.html (aplicação SPA)
 [[redirects]]
   from = "/*"

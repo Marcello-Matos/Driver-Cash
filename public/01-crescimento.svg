@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Gráfico de crescimento">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071523"/><stop offset="1" stop-color="#030b16"/></linearGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <linearGradient id="green" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#22f0a0"/><stop offset="1" stop-color="#00bf73"/></linearGradient><linearGradient id="lime" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#31ee83"/><stop offset="1" stop-color="#9cff31"/></linearGradient>
+</defs>
+<rect width="256" height="256" rx="30" fill="url(#bg)"/>
+
+<g filter="url(#glow)" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="40" y="147" width="32" height="62" rx="7" fill="url(#green)"/>
+ <rect x="91" y="126" width="32" height="83" rx="7" fill="url(#green)"/>
+ <rect x="142" y="91" width="32" height="118" rx="7" fill="url(#green)"/>
+ <path d="M43 121 93 79l34 25 73-69" fill="none" stroke="url(#lime)" stroke-width="15"/>
+ <path d="M169 34h32v32" fill="none" stroke="url(#lime)" stroke-width="15"/>
+</g>
+</svg>

@@ -31,6 +31,37 @@ body.no-scroll {
   overflow: hidden;
 }
 
+/* ---------- Animacao leve do logo DriverCash ---------- */
+/* Pulso suave de brilho no ladrilho. */
+.dcg-logo-tile {
+  animation: dcg-glow 3.2s ease-in-out infinite;
+}
+@keyframes dcg-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(33, 211, 107, 0.30)); }
+  50%      { filter: drop-shadow(0 0 13px rgba(33, 211, 107, 0.60)); }
+}
+/* Carroceria balancando como suspensao (rodas ficam no chao). */
+.dcg-truck-body {
+  animation: dcg-bounce 2.4s ease-in-out infinite;
+}
+@keyframes dcg-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.6px); }
+}
+/* Rodas girando devagar, como se estivesse rodando. */
+.dcg-wheel {
+  animation: dcg-spin 1.9s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes dcg-spin {
+  to { transform: rotate(360deg); }
+}
+/* Respeita quem prefere menos movimento (acessibilidade). */
+@media (prefers-reduced-motion: reduce) {
+  .dcg-logo-tile, .dcg-truck-body, .dcg-wheel { animation: none; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -115,4 +146,42 @@ body.no-scroll {
   input[type='radio'] {
     font-size: inherit;
   }
+}
+
+/* Icones 3D do menu lateral: elevacao suave, brilho colorido no hover
+   e efeito de pressao ao clicar. */
+.nav-btn-3d {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+  will-change: transform;
+}
+.nav-btn-3d:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+.nav-btn-3d:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
+}
+.nav-icon-3d {
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform .2s ease-out, box-shadow .2s ease-out, filter .2s ease-out;
+  will-change: transform;
+  user-select: none;
+}
+.group:hover .nav-icon-3d {
+  transform: translateY(-2px) scale(1.16) rotate(-4deg);
+  filter: saturate(1.25) brightness(1.1);
+  box-shadow: 0 9px 20px rgba(163, 230, 53, 0.4), 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+.nav-icon-active {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55), 0 0 14px rgba(255, 255, 255, 0.35);
+}
+.group:hover .nav-icon-active {
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.group:active .nav-icon-3d {
+  transform: translateY(0) scale(0.92);
+  filter: brightness(0.95);
 }

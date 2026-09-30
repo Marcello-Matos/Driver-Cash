@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { Truck, Mail, Lock, User, Loader2 } from 'lucide-react'
+import { Mail, Lock, User, Loader2, CheckCircle2, ArrowLeft } from 'lucide-react'
+import LogoMark from './Logo'
 import { useStore } from '../store'
+import { LANDING_URL } from '../lib/entry'
 
-export default function Auth() {
+export default function Auth({ initialMode = 'login', fromPayment = false }) {
   const { signIn, signUp } = useStore()
-  const [mode, setMode] = useState('login') // 'login' | 'signup'
+  const [mode, setMode] = useState(initialMode) // 'login' | 'signup'
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -31,11 +33,20 @@ export default function Auth() {
     <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-brand-500 flex items-center justify-center text-white"><Truck size={24} /></div>
-          <div className="text-2xl font-extrabold text-slate-800 dark:text-white">Driver<span className="text-brand-500">Cash</span></div>
+          <LogoMark size={44} className="shrink-0" />
+          <div className="text-2xl font-extrabold text-slate-800 dark:text-white">Driver<span className="bg-gradient-to-r from-lime-500 to-teal-400 bg-clip-text text-transparent">Cash</span></div>
         </div>
 
         <div className="card p-6">
+          {fromPayment && (
+            <div className="mb-4 flex items-start gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/30 p-3 text-sm text-brand-700 dark:text-brand-300">
+              <CheckCircle2 size={18} className="shrink-0 mt-0.5" />
+              <div>
+                <b>Pagamento recebido!</b> Crie sua conta (ou entre, se já tiver) para liberar o DriverCash PRO.
+                Use de preferência o mesmo e-mail do Mercado Pago.
+              </div>
+            </div>
+          )}
           <h1 className="text-lg font-bold mb-1">{mode === 'login' ? 'Entrar na sua conta' : 'Criar sua conta'}</h1>
           <p className="text-sm text-slate-400 mb-5">Controle financeiro para motoristas de aplicativo.</p>
 
@@ -83,6 +94,10 @@ export default function Auth() {
             </button>
           </div>
         </div>
+
+        <a href={LANDING_URL} className="mt-4 flex items-center justify-center gap-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <ArrowLeft size={14} /> Voltar para o site
+        </a>
       </div>
     </div>
   )

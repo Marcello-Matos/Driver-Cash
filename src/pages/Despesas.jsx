@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react'
-import { Plus, Pencil, Trash2, Receipt } from 'lucide-react'
+import { Plus, Pencil, Trash2, Receipt, Lock } from 'lucide-react'
 import { useStore } from '../store'
 import { useSelectedMonth } from '../components/Topbar'
 import { monthExpenses } from '../lib/metrics'
+import { FREE_EXPENSES_PER_DAY } from '../lib/billing'
 import { brl, formatDateBR, todayISO, CATEGORIES, categoryColor } from '../lib/utils'
 import { SectionCard, Modal, EmptyState } from '../components/ui'
 
@@ -10,8 +11,9 @@ const empty = () => ({
   date: todayISO(), category: 'Combustível', description: '', amount: '', liters: '', vehicleId: '', note: ''
 })
 
-export default function Despesas({ fixedCategory }) {
+export default function Despesas({ fixedCategory, goTo }) {
   const store = useStore()
+  const [limitMsg, setLimitMsg] = useState('')
   const { year, month } = useSelectedMonth()
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState(null)
@@ -34,8 +36,19 @@ export default function Despesas({ fixedCategory }) {
 
   const save = () => {
     const payload = { ...form, amount: Number(form.amount || 0), liters: form.liters ? Number(form.liters) : undefined }
-    if (editing) store.updateExpense(editing, payload)
-    else store.addExpense(payload)
+    if (editing) {
+      store.updateExpense(editing, payload)
+    } else {
+      if (!store.access.isPro) {
+        const sameDay = store.expenses.filter((e) => e.date === payload.date).length
+        if (sameDay >= FREE_EXPENSES_PER_DAY) {
+          setLimitMsg(`O plano Gratuito permite até ${FREE_EXPENSES_PER_DAY} despesas por dia. Assine o Pro para lançamentos ilimitados.`)
+          return
+        }
+      }
+      store.addExpense(payload)
+    }
+    setLimitMsg('')
     setOpen(false)
   }
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -103,13 +116,26 @@ export default function Despesas({ fixedCategory }) {
 
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => { setOpen(false); setLimitMsg('') }}
         title={editing ? 'Editar despesa' : 'Nova despesa'}
         footer={<>
           <button className="btn-ghost" onClick={() => setOpen(false)}>Cancelar</button>
           <button className="btn-primary" onClick={save}>Salvar</button>
         </>}
       >
+        {limitMsg && (
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
+            <Lock size={16} className="mt-0.5 shrink-0" />
+            <div className="flex-1">
+              {limitMsg}
+              {goTo && (
+                <button className="block mt-1 font-semibold underline underline-offset-2" onClick={() => { setOpen(false); setLimitMsg(''); goTo('assinatura') }}>
+                  Ver planos
+                </button>
+              )}
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="label">Data</label><input type="date" className="input" value={form.date} onChange={set('date')} /></div>
           <div>

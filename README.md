@@ -59,3 +59,129 @@ Para carregar **dados de exemplo**, entre em **Configurações → Dados → Res
 npm run build
 npm run preview
 ```
+
+## Planos e assinatura via Mercado Pago
+
+| Plano | Acesso |
+|---|---|
+| **Teste grátis** (7 dias após o cadastro) | Tudo do Pro |
+| **Gratuito** (após o teste, sem assinatura) | Dashboard, Ganhos, Despesas (até 3/dia), Veículos, Metas |
+| **Pro** (mensal ou anual) | Tudo: Resumo diário, Combustível, Manutenção, Relatórios, Calendário e despesas ilimitadas |
+
+As páginas exclusivas do Pro e o limite do Gratuito ficam em `src/lib/billing.js`
+(`PRO_PAGES` e `FREE_EXPENSES_PER_DAY`). A tela **Assinatura** mostra os planos do
+Mercado Pago (assinatura recorrente, Pix ou cartão).
+Quando o MP confirma a assinatura, ele avisa o app por **webhook**, que libera o acesso
+para o **e-mail da conta Mercado Pago do pagador**. Se o e-mail do MP for diferente do
+e-mail de login, o usuário usa o botão **"Já paguei, verificar"** e informa o e-mail do MP.
+
+Arquivos envolvidos:
+
+- `netlify/functions/mp-webhook.js` — recebe as notificações do Mercado Pago
+- `netlify/functions/mp-verify.js` — botão "Já paguei" (consulta o MP pelo e-mail)
+- `src/lib/billing.js` — planos, trial e cálculo de acesso
+- `src/components/Paywall.jsx` — tela de assinatura
+
+### 1. Supabase
+
+No **SQL Editor**, rode o arquivo `supabase/subscriptions.sql`.
+
+Para liberar acesso permanente para você mesmo (ou para um usuário manualmente), rode:
+
+```sql
+insert into public.subscriptions (email, status, plan, current_period_end)
+values ('seu-email@exemplo.com', 'active', 'Vitalício', '2099-12-31')
+on conflict (email) do update set status = 'active', current_period_end = '2099-12-31';
+```
+
+### Fluxo de entrada (landing page ↔ app)
+
+- Visitante que abre o app **sem login e sem nunca ter entrado naquele aparelho** é
+  redirecionado para a landing page (`VITE_LANDING_URL`).
+- Links que a landing deve usar para abrir o app (`src/lib/entry.js`):
+  - **Começar grátis** → `https://SEU-APP.netlify.app/?cadastro=1`
+  - **Entrar** → `https://SEU-APP.netlify.app/?login=1`
+  - **Assinar Pro / Anual** → link do plano no Mercado Pago (o MP redireciona de volta).
+- No Mercado Pago, em cada plano configure a **URL de retorno** (back_url) como
+  `https://SEU-APP.netlify.app/?from=mp`. O MP adiciona `preapproval_id` na URL; o app guarda
+  esse id, pede para o cliente criar a conta e vincula a assinatura automaticamente após o login.
+
+### 2. Mercado Pago
+
+1. Acesse **https://www.mercadopago.com.br/developers** → **Suas integrações** → crie uma
+   aplicação (ou use a existente) do tipo **Pagamentos online / Assinaturas**.
+2. Em **Credenciais de produção**, copie o **Access Token** (`APP_USR-...`).
+3. Em **Webhooks** → **Configurar notificações** (modo produção):
+   - URL: `https://SEU-SITE.netlify.app/.netlify/functions/mp-webhook`
+   - Eventos: marque **Planos e assinaturas** (`subscription_preapproval`) e
+     **Pagamentos de assinaturas** (`subscription_authorized_payment`).
+   - Salve e copie a **Assinatura secreta** exibida.
+4. Os links dos planos (`.../subscriptions/checkout?preapproval_plan_id=...`) você já tem
+   em **Assinaturas → Planos** no painel do Mercado Pago.
+
+### 3. Netlify — variáveis de ambiente
+
+Em **Site settings → Environment variables**, adicione:
+
+| Variável | Valor |
+|---|---|
+| `VITE_MP_CHECKOUT_MENSAL` | link do plano mensal |
+| `VITE_MP_PRICE_MENSAL` | `19.90` |
+| `VITE_MP_CHECKOUT_ANUAL` | link do plano anual (opcional) |
+| `VITE_MP_PRICE_ANUAL` | preço anual, ex.: `199.00` (opcional) |
+| `VITE_MP_ANUAL_DESTAQUE` | selo do plano anual, ex.: `2 meses grátis` (opcional) |
+| `MP_ACCESS_TOKEN` | Access Token de produção do Mercado Pago (**secreta**) |
+| `MP_WEBHOOK_SECRET` | Assinatura secreta do webhook (**secreta**) |
+| `SUPABASE_URL` | Project URL do Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** (**secreta**) |
+
+Depois clique em **Trigger deploy** para aplicar.
+
+### 4. Testar
+
+1. Faça uma assinatura de teste pelo link do plano.
+2. No Supabase, a tabela `subscriptions` deve receber a linha com `status = active`.
+3. Entre no app com o mesmo e-mail — o acesso deve estar liberado.
+4. Se não liberar, clique em **"Já paguei, verificar"** na tela de assinatura.
+
+## Integração com a Uber (Driver API)
+
+Importa automaticamente os ganhos, corridas, km e horas de cada motorista (1 lançamento por dia,
+plataforma **Uber**). Os lançamentos manuais não são alterados.
+
+> O acesso à Driver API é **restrito**: a Uber precisa aprovar o seu app. Enquanto não aprovar,
+> a API responde 401/403 e o app mostra "A Uber recusou o acesso".
+
+### 1. Uber Developer
+
+1. Crie um app em **https://developer.uber.com/dashboard**.
+2. Solicite acesso à Driver API em **https://developer.uber.com/products/drivers**.
+3. Na aba **Auth** do app:
+   - **Redirect URI**: `https://SEU-APP.netlify.app/.netlify/functions/uber-callback`
+   - Escopos: `partner.accounts`, `partner.trips`, `partner.payments`
+4. Copie o **Client ID** e o **Client Secret**.
+
+### 2. Supabase
+
+Rode `supabase/uber.sql` no **SQL Editor**. Ele cria a tabela `uber_connections`, onde os tokens
+ficam guardados sem acesso pelo app (só pelo servidor), e adiciona as colunas `source`/`external_id` em `earnings`.
+
+### 3. Netlify — variáveis
+
+| Variável | Valor |
+|---|---|
+| `UBER_CLIENT_ID` | Client ID do app Uber |
+| `UBER_CLIENT_SECRET` | Client Secret (**secreta**) |
+| `UBER_REDIRECT_URI` | `https://SEU-APP.netlify.app/.netlify/functions/uber-callback` |
+| `UBER_SANDBOX` | `true` para usar a sandbox da Uber (opcional) |
+
+Depois clique em **Trigger deploy**.
+
+### Como funciona
+
+- Em **Ganhos** aparece o card **Conectar Uber** (só depois que as variáveis estiverem configuradas).
+- O motorista autoriza na Uber → `uber-callback` salva os tokens e importa os últimos 30 dias.
+- `uber-cron` (Scheduled Function) sincroniza todos os motoristas conectados **a cada 3 horas**.
+- O botão **Sincronizar** força a atualização na hora.
+- Valor do dia = repasse líquido da Uber + dinheiro recebido direto do passageiro. Horas = tempo em
+  corrida (a API não informa o tempo online).

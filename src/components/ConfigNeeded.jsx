@@ -1,13 +1,14 @@
 import React from 'react'
-import { Database, Truck } from 'lucide-react'
+import { Database } from 'lucide-react'
+import LogoMark from './Logo'
 
 export default function ConfigNeeded() {
   return (
     <div className="app-shell flex items-center justify-center bg-slate-100 dark:bg-slate-900 p-4">
       <div className="w-full max-w-xl card p-8">
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-brand-500 flex items-center justify-center text-white"><Truck size={24} /></div>
-          <div className="text-2xl font-extrabold">Driver<span className="text-brand-500">Cash</span></div>
+          <LogoMark size={44} className="shrink-0" />
+          <div className="text-2xl font-extrabold">Driver<span className="bg-gradient-to-r from-lime-500 to-teal-400 bg-clip-text text-transparent">Cash</span></div>
         </div>
 
         <div className="flex items-center gap-2 text-amber-500 font-semibold mb-2">
