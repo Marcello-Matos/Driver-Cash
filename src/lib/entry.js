@@ -8,6 +8,14 @@ export const LANDING_URL = import.meta.env.VITE_LANDING_URL || 'https://driver-c
 const KNOWN_KEY = 'drivercash:known-device'
 const PENDING_KEY = 'drivercash:pending-preapproval'
 
+// Retorno da conexão com a Uber (?uber=connected|error&uber_msg=...), consumido uma vez pela tela de Ganhos
+let uberReturn = null
+export function consumeUberReturn() {
+  const r = uberReturn
+  uberReturn = null
+  return r
+}
+
 export function markKnownDevice() {
   try { localStorage.setItem(KNOWN_KEY, '1') } catch { /* ignore */ }
 }
@@ -40,6 +48,12 @@ export function readEntry() {
 
   if (preapprovalId) setPendingPreapproval(preapprovalId)
 
+  const uber = p.get('uber')
+  if (uber) {
+    uberReturn = { status: uber, message: p.get('uber_msg') || '' }
+    window.history.replaceState({}, '', url.pathname)
+  }
+
   const cameFromLink = fromPayment || wantsSignup || wantsLogin
   if (cameFromLink) {
     markKnownDevice()
@@ -48,6 +62,7 @@ export function readEntry() {
   }
 
   return {
+    uber: uber || null,
     authMode: fromPayment || wantsSignup ? 'signup' : wantsLogin ? 'login' : null,
     fromPayment,
     redirectToLanding: !cameFromLink && !isKnownDevice()

@@ -9,7 +9,7 @@ export const CATEGORIES = [
   { key: 'Outros', color: '#94a3b8' }
 ]
 
-export const PLATFORMS = ['UberX', 'Uber Comfort', 'Uber Black', '99', '99 Pop', 'InDrive', 'Particular', 'Outros']
+export const PLATFORMS = ['Uber', 'UberX', 'Uber Comfort', 'Uber Black', '99', '99 Pop', 'InDrive', 'Particular', 'Outros']
 
 export const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',

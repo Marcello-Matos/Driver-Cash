@@ -5,6 +5,7 @@ import { useSelectedMonth } from '../components/Topbar'
 import { monthEarnings } from '../lib/metrics'
 import { brl, numberBR, formatDateBR, todayISO, PLATFORMS } from '../lib/utils'
 import { SectionCard, Modal, EmptyState, Badge } from '../components/ui'
+import UberConnect from '../components/UberConnect'
 
 const empty = () => ({
   date: todayISO(), platform: 'UberX', gross: '', trips: '', km: '', hours: '', vehicleId: '', note: ''
@@ -49,6 +50,8 @@ export default function Ganhos() {
 
   return (
     <div className="space-y-6">
+      <UberConnect />
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatMini label="Total de ganhos" value={brl(totals.gross)} />
         <StatMini label="Corridas" value={numberBR(totals.trips)} />

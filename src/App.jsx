@@ -19,7 +19,6 @@ import Veiculos from './pages/Veiculos'
 import Metas from './pages/Metas'
 import Relatorios from './pages/Relatorios'
 import Calendario from './pages/Calendario'
-import ExportarPDF from './pages/ExportarPDF'
 import Configuracoes from './pages/Configuracoes'
 import { isProPage, verifyPayment } from './lib/billing'
 import { readEntry, LANDING_URL, markKnownDevice, getPendingPreapproval, setPendingPreapproval } from './lib/entry'
@@ -37,7 +36,6 @@ const PAGES = {
   veiculos: { title: 'Veículos', component: Veiculos },
   metas: { title: 'Metas', component: Metas },
   relatorios: { title: 'Relatórios', component: Relatorios },
-  exportar: { title: 'Exportar PDF', component: ExportarPDF },
   calendario: { title: 'Calendário', component: Calendario },
   configuracoes: { title: 'Configurações', component: Configuracoes },
   assinatura: { title: 'Assinatura', component: Paywall }
@@ -53,7 +51,7 @@ function FullScreenLoader() {
 
 function AppShell() {
   const { isSupabaseConfigured, authReady, session, dataReady, access, reload } = useStore()
-  const [page, setPage] = useState('dashboard')
+  const [page, setPage] = useState(ENTRY.uber ? 'ganhos' : 'dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [linking, setLinking] = useState(false)
 
@@ -80,10 +78,11 @@ function AppShell() {
     verifyPayment({ preapprovalId: pending })
       .then(async (r) => {
         if (cancelled) return
-        setPendingPreapproval('')
-        if (r.ok) await reload()
+        if (r.ok) {
+          setPendingPreapproval('')
+          await reload()
+        }
       })
-      .catch(() => { /* sem rede: tenta de novo na próxima abertura */ })
       .finally(() => { if (!cancelled) setLinking(false) })
     return () => { cancelled = true }
   }, [session, dataReady]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -115,7 +114,7 @@ function AppShell() {
         />
         <TrialBanner goTo={setPage} page={page} />
         <main className="flex-1 p-4 sm:p-6 max-w-[1400px] w-full mx-auto">
-          {locked ? <Paywall feature={PAGES[page]?.title} goTo={setPage} /> : <Current goTo={setPage} />}
+          {locked ? <Paywall feature={PAGES[page]?.title} /> : <Current goTo={setPage} />}
         </main>
       </div>
 

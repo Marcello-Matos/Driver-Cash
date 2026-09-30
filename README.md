@@ -143,3 +143,45 @@ Depois clique em **Trigger deploy** para aplicar.
 2. No Supabase, a tabela `subscriptions` deve receber a linha com `status = active`.
 3. Entre no app com o mesmo e-mail — o acesso deve estar liberado.
 4. Se não liberar, clique em **"Já paguei, verificar"** na tela de assinatura.
+
+## Integração com a Uber (Driver API)
+
+Importa automaticamente os ganhos, corridas, km e horas de cada motorista (1 lançamento por dia,
+plataforma **Uber**). Os lançamentos manuais não são alterados.
+
+> O acesso à Driver API é **restrito**: a Uber precisa aprovar o seu app. Enquanto não aprovar,
+> a API responde 401/403 e o app mostra "A Uber recusou o acesso".
+
+### 1. Uber Developer
+
+1. Crie um app em **https://developer.uber.com/dashboard**.
+2. Solicite acesso à Driver API em **https://developer.uber.com/products/drivers**.
+3. Na aba **Auth** do app:
+   - **Redirect URI**: `https://SEU-APP.netlify.app/.netlify/functions/uber-callback`
+   - Escopos: `partner.accounts`, `partner.trips`, `partner.payments`
+4. Copie o **Client ID** e o **Client Secret**.
+
+### 2. Supabase
+
+Rode `supabase/uber.sql` no **SQL Editor**. Ele cria a tabela `uber_connections`, onde os tokens
+ficam guardados sem acesso pelo app (só pelo servidor), e adiciona as colunas `source`/`external_id` em `earnings`.
+
+### 3. Netlify — variáveis
+
+| Variável | Valor |
+|---|---|
+| `UBER_CLIENT_ID` | Client ID do app Uber |
+| `UBER_CLIENT_SECRET` | Client Secret (**secreta**) |
+| `UBER_REDIRECT_URI` | `https://SEU-APP.netlify.app/.netlify/functions/uber-callback` |
+| `UBER_SANDBOX` | `true` para usar a sandbox da Uber (opcional) |
+
+Depois clique em **Trigger deploy**.
+
+### Como funciona
+
+- Em **Ganhos** aparece o card **Conectar Uber** (só depois que as variáveis estiverem configuradas).
+- O motorista autoriza na Uber → `uber-callback` salva os tokens e importa os últimos 30 dias.
+- `uber-cron` (Scheduled Function) sincroniza todos os motoristas conectados **a cada 3 horas**.
+- O botão **Sincronizar** força a atualização na hora.
+- Valor do dia = repasse líquido da Uber + dinheiro recebido direto do passageiro. Horas = tempo em
+  corrida (a API não informa o tempo online).
